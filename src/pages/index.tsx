@@ -1,28 +1,18 @@
 import React from 'react';
 import styles from './index.less';
 import { Button } from 'antd';
-// import { getCaptcha } from '@/services/login';
-import request from '@/utils/request';
+import { getCaptcha } from '@/services/login';
 import { setAuthority } from '@/utils/authority';
 
 export default () => {
   function mocktest() {
-    request
-      .get('/test2')
+    getCaptcha()
       .then(res => {
         console.log('获取到了', res);
       })
       .catch(error => {
-        console.error('error', error);
+        console.error('失败', error);
       });
-
-    // getCaptcha()
-    //   .then(res => {
-    //     console.log('获取到了', res);
-    //   })
-    //   .catch(error => {
-    //     console.error('失败', error);
-    //   });
   }
 
   function login() {

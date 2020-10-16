@@ -33,3 +33,7 @@ declare interface RequestOptionsInit {
 declare interface RequestInit {
   showType?: number;
 }
+
+declare module 'roadhog-api-doc' {
+  export function delay(opt: ant, time: number) {}
+}

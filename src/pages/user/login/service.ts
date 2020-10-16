@@ -50,7 +50,7 @@ export interface LoginParams {
   /** 登陆密码 */
   password: string;
   /** 验证码 */
-  captchaVO: {
+  captchaVO?: {
     /** 验证token aesEncrypt(token + '---' + JSON.stringify({ x: moveLeftDistance, y: 5.0 }), secretKey) */
     captchaVerification: string;
   };
@@ -69,10 +69,15 @@ export interface LoginRes {
 }
 
 /**
- * 滑块验证登陆
+ * 账号密码登陆
  */
 export function login(params: LoginParams) {
-  return request
-    .post<IResponse<LoginRes>>('/login/captcha', { data: params })
-    .then(res => res.res);
+  return request.post<IResponse<LoginRes>>('/auth/login', { data: params });
+}
+
+/**
+ * 滑块验证登陆
+ */
+export function loginByCaptcha(params: LoginParams) {
+  return request.post<IResponse<LoginRes>>('/auth/login/captcha', { data: params });
 }

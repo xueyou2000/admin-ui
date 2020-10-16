@@ -3,12 +3,20 @@
  * 详细文档 @see https://github.com/umijs/umi-request
  */
 import { message, Modal, notification } from 'antd';
-import { ErrorShowType, history, getIntl, getLocale } from 'umi';
+import { history, getIntl, getLocale } from 'umi';
 import { extend, ResponseError } from 'umi-request';
 import { getAuthority } from './authority';
 
 // 防止一秒内好几个请求，但此时登陆失效，全都401， 弹出多次Modal问题
 let stopAuthprityError = false;
+
+export enum ErrorShowType {
+  SILENT = 0,
+  WARN_MESSAGE = 1,
+  ERROR_MESSAGE = 2,
+  NOTIFICATION = 4,
+  REDIRECT = 9,
+}
 
 /**
  * 响应异常处理
