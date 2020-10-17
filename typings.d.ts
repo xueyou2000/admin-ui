@@ -37,3 +37,16 @@ declare interface RequestInit {
 declare module 'roadhog-api-doc' {
   export function delay(opt: ant, time: number) {}
 }
+
+interface EffectLoaing {
+  effects: {
+    [key: string]: boolean;
+  };
+}
+
+type DispatchX<P = any, C = (payload: P) => void> = (action: {
+  type: string;
+  payload?: P;
+  callback?: C;
+  [key: string]: any;
+}) => any;

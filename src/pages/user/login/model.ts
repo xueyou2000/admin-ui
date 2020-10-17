@@ -1,11 +1,7 @@
-import { Effect, history, Reducer } from 'umi';
-import { login, loginByCaptcha, LoginRes } from './service';
+import { backRedirect } from '@/utils/url-utils';
 import { message } from 'antd';
-import { parse } from 'qs';
-
-export function getPageQuery() {
-  return parse(window.location.href.split('?')[1]);
-}
+import { Effect, Reducer } from 'umi';
+import { loginByCaptcha } from './service';
 
 export interface StateType {
   /** 登陆请求响应状态 */
@@ -18,10 +14,11 @@ export interface ModelType {
   namespace: string;
   state: StateType;
   effects: {
-    login: Effect;
+    /** 滑块验证登陆 */
+    loginByCaptcha: Effect;
   };
   reducers: {
-    changeLoginStatus: Reducer<StateType>;
+    changeLoginStatus: Reducer<StateType, { type: 'changeLoginStatus'; payload: StateType }>;
   };
 }
 
@@ -29,10 +26,8 @@ const Model: ModelType = {
   namespace: 'userlogin',
   state: {},
   effects: {
-    *login({ payload }, { call, put }) {
-      console.log('登陆请求', payload);
+    *loginByCaptcha({ payload }, { call, put }) {
       const response: IResponse<LoginRes> = yield call(loginByCaptcha, payload);
-      console.log('登陆响应', response);
       yield put({
         type: 'changeLoginStatus',
         payload: {
@@ -43,27 +38,12 @@ const Model: ModelType = {
 
       if (response.status === 0) {
         message.success('登录成功！');
-        const urlParams = new URL(window.location.href);
-        const params = getPageQuery();
-        let { redirect } = params as { redirect: string };
-        if (redirect) {
-          const redirectUrlParams = new URL(redirect);
-          if (redirectUrlParams.origin === urlParams.origin) {
-            redirect = redirect.substr(urlParams.origin.length);
-            if (redirect.match(/^\/.*#/)) {
-              redirect = redirect.substr(redirect.indexOf('#') + 1);
-            }
-          } else {
-            window.location.href = redirect;
-            return;
-          }
-        }
-        history.replace(redirect || '/');
+        backRedirect();
       }
     },
   },
   reducers: {
-    changeLoginStatus(state, { payload }) {
+    changeLoginStatus(_state, { payload }) {
       return {
         ...payload,
       };

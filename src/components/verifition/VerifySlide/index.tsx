@@ -2,8 +2,50 @@ import { RedoOutlined } from '@ant-design/icons';
 import classNames from 'classnames';
 import React, { useEffect, useRef, useState } from 'react';
 import CSSTransition from 'xy-css-transition';
-import { aesEncrypt } from '../utils';
+import { aesEncrypt, getStartX } from '../utils';
 import styles from './index.less';
+
+interface VerifyStyle {
+  /**
+   * 滑块箭头背景色
+   */
+  moveBlockBackgroundColor: string;
+  /**
+   * 滑块箭头边框颜色
+   */
+  leftBarBorderColor: string;
+  /**
+   * 滑块箭头图标
+   */
+  iconClass: string;
+  /**
+   * 滑块箭头过度
+   */
+  transitionLeft: string;
+  /**
+   * 滑块箭头左边距离
+   */
+  moveBlockLeft: string;
+  /**
+   * 滑块条已滑动宽度
+   */
+  transitionWidth: string;
+  /**
+   * 占位符文本
+   */
+  text: string;
+}
+
+interface VerifyState {
+  /**
+   * 是否验证成功
+   */
+  passFlag: boolean;
+  /**
+   * 验证结果文本
+   */
+  tipWords: string;
+}
 
 interface VerifySlideProps {
   /**
@@ -18,10 +60,6 @@ interface VerifySlideProps {
    * 滑块条尺寸
    */
   barSize?: Size;
-  /**
-   * 点击元素尺寸
-   */
-  blockSize?: Size;
   /**
    * 操作提示
    * 默认： 向右滑动完成验证
@@ -41,6 +79,13 @@ interface VerifySlideProps {
   onCaptchaCheckChange?: (checked: boolean, captchaVerification?: string) => void;
 }
 
+const BlockColor = '#c3c6ca';
+const SuccesColor = '#5cb85c';
+const FailColor = '#d9534f';
+
+/**
+ * 滑块验证码
+ */
 export default function VerifySlide(props: VerifySlideProps) {
   const {
     className,
@@ -50,191 +95,168 @@ export default function VerifySlide(props: VerifySlideProps) {
     explain = '向右滑动完成验证',
     imgSize = { width: '310px', height: '155px' },
     barSize = { width: '310px', height: '40px' },
-    blockSize = { width: '50px', height: '30px' },
   } = props;
+  const sliderBarDom = useRef(null);
   const [captcha, setCaptcha] = useState<CaptchaInfo | null>(null);
-  const captchaRef = useRef(captcha);
-  const [tipWords, setTipWords] = useState('');
-  const [text, setText] = useState(explain);
-  const [leftBarWidth, setLeftBarWidth] = useState<string | null>(null);
-  const [leftBarBorderColor, setLeftBarBorderColor] = useState('#ddd');
-  const [transitionWidth, setTransitionWidth] = useState('');
-  const [moveBlockBackgroundColor, setMoveBlockBackgroundColor] = useState('');
-  const [moveBlockLeft, setMoveBlockLeft] = useState('');
-  const moveBlockLeftRef = useRef(moveBlockLeft);
-  const [transitionLeft, setTransitionLeft] = useState('');
-  const [iconClass, setIconClass] = useState('icon-right');
-  const [iconColor, setIconColor] = useState('');
-  const [passFlag, setPassFlag] = useState(false);
-  const barAreaRef = useRef(null);
-  // 开始滑动的时间
-  const startMoveTimeRef = useRef(0);
-  const endMovetimeRef = useRef(0);
+  const [
+    { text, iconClass, moveBlockBackgroundColor, leftBarBorderColor, transitionLeft, moveBlockLeft, transitionWidth },
+    setVerifyStyle,
+  ] = useState<VerifyStyle>({
+    text: explain,
+    moveBlockBackgroundColor: '',
+    leftBarBorderColor: '#ddd',
+    iconClass: 'icon-right',
+    transitionLeft: '',
+    moveBlockLeft: '',
+    transitionWidth: '',
+  });
+  const [{ passFlag, tipWords }, setVerifyState] = useState<VerifyState>({
+    passFlag: false,
+    tipWords: '',
+  });
+
+  const isStartRef = useRef(false);
   const isEndRef = useRef(false);
-  const statusRef = useRef(false);
+  const startTimeRef = useRef(0);
+  const endTimeRef = useRef(0);
   const startLeftRef = useRef(0);
+  const moveBlockLeftRef = useRef(moveBlockLeft);
 
-  function refresh() {
-    setTransitionLeft('left .3s');
-    setMoveBlockLeft('0px');
-    setLeftBarWidth('');
-    setTransitionWidth('width .3s');
-
-    setLeftBarBorderColor('#ddd');
-    setMoveBlockBackgroundColor('#fff');
-    setIconColor('#000');
-    setIconClass('icon-right');
-    isEndRef.current = false;
-
-    getPictrue();
-    setTimeout(() => {
-      setTransitionWidth('');
-      setTransitionLeft('');
-      setText(explain);
-    }, 400);
-  }
-
-  function getPictrue() {
-    getCaptcha().then(res => {
-      if (res.repCode === '0000') {
-        captchaRef.current = res.repData;
-        setCaptcha(res.repData);
-      } else {
-        setTipWords(res.repMsg);
-      }
-    });
-  }
-
-  function start(e: any) {
-    const barArea = barAreaRef.current as HTMLElement | null;
-    if (!barArea) {
-      return;
-    }
-
-    let x: number;
-    if (!e.touches) {
-      // 兼容PC端
-      x = e.clientX;
-    } else {
-      // 兼容移动端
-      x = e.touches[0].pageX;
-    }
-
-    startLeftRef.current = Math.floor(x - barArea.getBoundingClientRect().left);
-    startMoveTimeRef.current = +new Date();
-    if (isEndRef.current === false) {
-      setText('');
-      setMoveBlockBackgroundColor('#337ab7');
-      setLeftBarBorderColor('#337AB7');
-      setIconColor('#fff');
-      e.stopPropagation();
-      statusRef.current = true;
-    }
-  }
-
-  function move(e: any) {
-    const barArea = barAreaRef.current as HTMLElement | null;
-    if (!barArea) {
-      return;
-    }
-
-    if (statusRef.current && isEndRef.current === false) {
-      let x;
-      if (!e.touches) {
-        // 兼容PC端
-        x = e.clientX;
-      } else {
-        // 兼容移动端
-        x = e.touches[0].pageX;
-      }
-      const barAreaLeft = barArea.getBoundingClientRect().left;
-      let moveBlockLeft = x - barAreaLeft; // 小方块相对于父元素的left值
-      if (moveBlockLeft >= barArea.offsetWidth - parseInt(parseInt(blockSize.width) / 2 + '') - 2) {
-        moveBlockLeft = barArea.offsetWidth - parseInt(parseInt(blockSize.width) / 2 + '') - 2;
-      }
-      if (moveBlockLeft <= 0) {
-        moveBlockLeft = parseInt(parseInt(blockSize.width) / 2 + '');
-      }
-
-      moveBlockLeftRef.current = moveBlockLeft - startLeftRef.current + 'px';
-      setMoveBlockLeft(moveBlockLeftRef.current);
-      setLeftBarWidth(moveBlockLeftRef.current);
-    }
-  }
-
-  function end(e: any) {
-    endMovetimeRef.current = new Date().getTime();
-    // 判断是否重合
-    if (statusRef.current && isEndRef.current === false) {
-      var moveLeftDistance = parseInt((moveBlockLeftRef.current || '').replace('px', ''));
-      moveLeftDistance = (moveLeftDistance * 310) / parseInt(imgSize.width);
-      const data: CheckCaptchaParams = {
-        captchaType: 'blockPuzzle',
-        pointJson: aesEncrypt(JSON.stringify({ x: moveLeftDistance, y: 5.0 }), captchaRef.current?.secretKey || ''),
-        token: captchaRef.current?.token || '',
-      };
-
-      checkCaptcha(data).then(res => {
-        if (res.repCode === '0000') {
-          setMoveBlockBackgroundColor('#5cb85c');
-          setLeftBarBorderColor('#5cb85c');
-          setIconColor('#fff');
-          setIconClass('icon-check');
-          isEndRef.current = true;
-          setPassFlag(true);
-          setTipWords(`${((endMovetimeRef.current - startMoveTimeRef.current) / 1000).toFixed(2)}s验证成功`);
-          var captchaVerification = aesEncrypt(
-            captcha?.secretKey || '' + '---' + JSON.stringify({ x: moveLeftDistance, y: 5.0 }),
-            captcha?.secretKey || '',
-          );
-          setTimeout(() => {
-            console.log('验证通过', captchaVerification);
-            if (onCaptchaCheckChange) {
-              onCaptchaCheckChange(true, captchaVerification);
-            }
-            refresh();
-          }, 1000);
-        } else {
-          setMoveBlockBackgroundColor('#d9534f');
-          setLeftBarBorderColor('#d9534f');
-          setIconColor('#fff');
-          setIconClass('icon-close');
-          setPassFlag(false);
-
-          setTimeout(() => {
-            refresh();
-          }, 1000);
-
-          if (onCaptchaCheckChange) {
-            onCaptchaCheckChange(false);
-          }
-          setTipWords('验证失败');
-          setTimeout(() => {
-            setTipWords('');
-          }, 1000);
-        }
-      });
-      statusRef.current = false;
-    }
-  }
-
+  // init
   useEffect(() => {
     getPictrue();
+  }, []);
 
+  // listen events
+  useEffect(() => {
     window.addEventListener('touchmove', move);
     window.addEventListener('mousemove', move);
-
-    // 鼠标松开
     window.addEventListener('touchend', end);
     window.addEventListener('mouseup', end);
-
     return () => {
       window.removeEventListener('touchmove', move);
       window.removeEventListener('mousemove', move);
       window.removeEventListener('touchend', end);
       window.removeEventListener('mouseup', end);
     };
-  }, []);
+  }, [captcha, onCaptchaCheckChange]);
+
+  function refresh() {
+    isEndRef.current = false;
+    getPictrue();
+    setVerifyState({ passFlag: false, tipWords: '' });
+    setVerifyStyle({
+      transitionLeft: 'left .3s',
+      moveBlockLeft: '',
+      transitionWidth: 'width .3s',
+      leftBarBorderColor: '#ddd',
+      moveBlockBackgroundColor: '#fff',
+      iconClass: 'icon-right',
+      text: explain,
+    });
+    // .3s过度完毕后清除过度transition
+    setTimeout(() => {
+      setVerifyStyle(style => ({ ...style, transitionLeft: '', transitionWidth: '' }));
+    }, 300);
+  }
+
+  function getPictrue() {
+    getCaptcha().then(res => {
+      if (res.repCode === '0000') {
+        setCaptcha(res.repData);
+      } else {
+        setVerifyState(verifyState => ({ ...verifyState, tipWords: res.repMsg }));
+      }
+    });
+  }
+
+  function start(e: any) {
+    const sliderBar = sliderBarDom.current as HTMLElement | null;
+    if (!sliderBar) {
+      return;
+    }
+
+    let x: number = getStartX(e);
+    startLeftRef.current = Math.floor(x - sliderBar.getBoundingClientRect().left);
+    startTimeRef.current = +new Date();
+    if (isEndRef.current === false) {
+      isStartRef.current = true;
+      setVerifyStyle(style => ({
+        ...style,
+        text: '',
+        moveBlockBackgroundColor: BlockColor,
+        leftBarBorderColor: BlockColor,
+      }));
+      e.stopPropagation();
+    }
+  }
+
+  function move(e: any) {
+    const sliderBar = sliderBarDom.current as HTMLElement | null;
+    if (!sliderBar) {
+      return;
+    }
+
+    if (isStartRef.current && isEndRef.current === false) {
+      let x = getStartX(e);
+      let moveBlockLeft = x - sliderBar.getBoundingClientRect().left; // 小方块相对于父元素的left值
+
+      if (moveBlockLeft - startLeftRef.current <= 0) {
+        moveBlockLeftRef.current = '0px';
+      } else if (moveBlockLeft >= parseFloat(barSize.width) - parseInt(barSize.height)) {
+        moveBlockLeftRef.current = parseFloat(barSize.width) - parseInt(barSize.height) + 'px';
+      } else {
+        moveBlockLeftRef.current = moveBlockLeft - startLeftRef.current + 'px';
+      }
+      setVerifyStyle(style => ({ ...style, moveBlockLeft: moveBlockLeftRef.current }));
+    }
+  }
+
+  function end() {
+    endTimeRef.current = new Date().getTime();
+    if (!isStartRef.current || isEndRef.current) {
+      return;
+    }
+
+    // 判断是否重合
+    var moveLeftDistance = parseInt(moveBlockLeftRef.current.replace('px', '') || '0');
+    moveLeftDistance = (moveLeftDistance * parseFloat(barSize.width)) / parseInt(imgSize.width);
+    const data: CheckCaptchaParams = {
+      captchaType: 'blockPuzzle',
+      token: captcha?.token || '',
+      pointJson: aesEncrypt(JSON.stringify({ x: moveLeftDistance, y: 5.0 }), captcha?.secretKey || ''),
+    };
+
+    checkCaptcha(data).then(res => {
+      const chcked = res.repCode === '0000';
+      setVerifyStyle(style => ({
+        ...style,
+        moveBlockBackgroundColor: chcked ? SuccesColor : FailColor,
+        leftBarBorderColor: chcked ? SuccesColor : FailColor,
+        iconClass: chcked ? 'icon-check' : 'icon-close',
+      }));
+      setVerifyState({
+        passFlag: chcked,
+        tipWords: chcked ? `${((endTimeRef.current - startTimeRef.current) / 1000).toFixed(1)}s 验证成功` : '验证失败',
+      });
+
+      setTimeout(() => {
+        if (onCaptchaCheckChange) {
+          onCaptchaCheckChange(
+            chcked,
+            aesEncrypt(
+              captcha?.secretKey || '' + '---' + JSON.stringify({ x: moveLeftDistance, y: 5.0 }),
+              captcha?.secretKey || '',
+            ),
+          );
+        }
+        refresh();
+      }, 1000);
+
+      isEndRef.current = true;
+    });
+    isStartRef.current = false;
+  }
 
   return (
     <div className={classNames(className, styles.verifySlide)}>
@@ -253,7 +275,7 @@ export default function VerifySlide(props: VerifySlideProps) {
         </div>
       </div>
       <div
-        ref={barAreaRef}
+        ref={sliderBarDom}
         className={styles.verifyBarArea}
         style={{ width: imgSize.width, height: barSize.height, lineHeight: barSize.height }}
       >
@@ -261,16 +283,16 @@ export default function VerifySlide(props: VerifySlideProps) {
         <div
           className={styles.verifyLeftBar}
           style={{
-            width: leftBarWidth || barSize.height,
+            width: moveBlockLeft || barSize.height,
             height: barSize.height,
             borderColor: leftBarBorderColor,
             transition: transitionWidth,
           }}
         >
           <div
-            className={styles.verifyMoveBlock}
-            onTouchStart={start}
             onMouseDown={start}
+            onTouchStart={start}
+            className={styles.verifyMoveBlock}
             style={{
               width: barSize.height,
               height: barSize.height,
@@ -279,7 +301,7 @@ export default function VerifySlide(props: VerifySlideProps) {
               transition: transitionLeft,
             }}
           >
-            <i className={classNames('verify-icon', iconClass)} style={{ color: iconColor }}></i>
+            <i className={classNames('verify-icon', iconClass)}></i>
             <div
               className={styles.verifySubBlock}
               style={{

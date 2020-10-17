@@ -9,15 +9,19 @@ import {
 import { Alert, Button, Checkbox, Form, Input, Tabs } from 'antd';
 import { FormInstance } from 'antd/es/form';
 import React, { useRef, useState } from 'react';
-import { connect, Dispatch, Link } from 'umi';
+import { connect, Link } from 'umi';
 import { StateType } from './model';
-import { checkCaptcha, getCaptcha, LoginParams } from './service';
+import { checkCaptcha, getCaptcha } from './service';
 import styles from './style.less';
 
 interface LoginProps {
-  dispatch: Dispatch;
+  /** 模型调度 */
+  dispatch: DispatchX<LoginParams>;
+  /** 模型状态 */
   userlogin: StateType;
+  /** 是否提交中 */
   submitting?: boolean;
+  /** antd表单实例 */
   form?: FormInstance;
 }
 
@@ -26,23 +30,25 @@ interface LoginProps {
  */
 function Login(props: LoginProps) {
   const { form, dispatch, userlogin, submitting } = props;
-  const [type, setType] = useState<string>('account');
-  const valuesRef = useRef<LoginParams | null>(null);
+  const [tabIndex, setTabIndex] = useState<string>('account');
   const [visible, setVisible] = useState(false);
+  const valuesRef = useRef<LoginParams | null>(null);
 
   function handleSubmit(values: LoginParams) {
-    if (type === 'account') {
+    if (tabIndex === 'account') {
       valuesRef.current = values;
       if (!visible) {
         setVisible(true);
       }
+    } else {
+      console.log('TODO: 即将写短信验证码登陆');
     }
   }
 
   function handleCaptchaCheckChange(checked: boolean, captchaVerification?: string) {
-    if (checked && valuesRef.current) {
+    if (checked && valuesRef.current && captchaVerification) {
       dispatch({
-        type: 'userlogin/login',
+        type: 'userlogin/loginByCaptcha',
         payload: {
           ...valuesRef.current,
           captchaVO: {
@@ -56,9 +62,9 @@ function Login(props: LoginProps) {
   return (
     <div className={styles.main}>
       <Form className={styles.login} form={form} onFinish={handleSubmit}>
-        <Tabs animated={true} className={styles.tabs} activeKey={type} onChange={setType}>
+        <Tabs animated={true} className={styles.tabs} activeKey={tabIndex} onChange={setTabIndex}>
           <Tabs.TabPane key="account" tab="账号密码登陆">
-            {userlogin.status === 'error' && type === 'account' && !submitting && (
+            {userlogin.status === 'error' && tabIndex === 'account' && !submitting && (
               <LoginErrorMessage content={userlogin.errMsg || '登陆失败'} />
             )}
             <Form.Item
@@ -150,5 +156,5 @@ function LoginErrorMessage({ content }: { content: string }) {
 
 export default connect(({ userlogin, loading }: { userlogin: StateType; loading: EffectLoaing }) => ({
   userlogin,
-  submitting: loading.effects['userlogin/login'],
+  submitting: loading.effects['userlogin/loginByCaptcha'],
 }))(Login);

@@ -100,7 +100,7 @@ export default defineConfig({
           ],
         },
         {
-          component: '404',
+          component: './error/404',
         },
       ],
     },
