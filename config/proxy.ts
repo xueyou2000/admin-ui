@@ -8,9 +8,9 @@
 export default {
   dev: {
     '/captcha': {
-      target: 'http://localhost:8052/',
+      target: 'http://antdv.totinlink.com',
       changeOrigin: true,
-      pathRewrite: { '^': '' },
+      pathRewrite: { '^/': '/api/' },
     },
   },
   test: {

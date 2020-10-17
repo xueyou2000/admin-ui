@@ -1,5 +1,5 @@
 import { Effect, history, Reducer } from 'umi';
-import { login, LoginRes } from './service';
+import { login, loginByCaptcha, LoginRes } from './service';
 import { message } from 'antd';
 import { parse } from 'qs';
 
@@ -30,7 +30,9 @@ const Model: ModelType = {
   state: {},
   effects: {
     *login({ payload }, { call, put }) {
-      const response: IResponse<LoginRes> = yield call(login, payload);
+      console.log('登陆请求', payload);
+      const response: IResponse<LoginRes> = yield call(loginByCaptcha, payload);
+      console.log('登陆响应', response);
       yield put({
         type: 'changeLoginStatus',
         payload: {

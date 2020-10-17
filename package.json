@@ -29,6 +29,7 @@
     "@umijs/test": "^3.2.23",
     "antd": "^4.7.0",
     "classnames": "^2.2.6",
+    "crypto-js": "^4.0.0",
     "dva": "^2.4.1",
     "lint-staged": "^10.0.7",
     "omit.js": "^2.0.2",
@@ -40,10 +41,12 @@
     "react-router": "^5.2.0",
     "umi": "^3.2.23",
     "use-merge-value": "^1.0.2",
+    "xy-css-transition": "^0.1.0",
     "yorkie": "^2.0.0"
   },
   "devDependencies": {
     "@types/classnames": "^2.2.10",
+    "@types/crypto-js": "^4.0.1",
     "@umijs/preset-ant-design-pro": "^1.2.2",
     "cross-env": "^7.0.2",
     "express": "^4.17.1",

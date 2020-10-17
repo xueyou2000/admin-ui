@@ -1,4 +1,4 @@
-import { LoginParams } from '@/services/login';
+import Verify from '@/components/verifition/Verify';
 import {
   AlipayCircleOutlined,
   LockTwoTone,
@@ -8,9 +8,10 @@ import {
 } from '@ant-design/icons';
 import { Alert, Button, Checkbox, Form, Input, Tabs } from 'antd';
 import { FormInstance } from 'antd/es/form';
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 import { connect, Dispatch, Link } from 'umi';
 import { StateType } from './model';
+import { checkCaptcha, getCaptcha, LoginParams } from './service';
 import styles from './style.less';
 
 interface LoginProps {
@@ -26,13 +27,28 @@ interface LoginProps {
 function Login(props: LoginProps) {
   const { form, dispatch, userlogin, submitting } = props;
   const [type, setType] = useState<string>('account');
+  const valuesRef = useRef<LoginParams | null>(null);
+  const [visible, setVisible] = useState(false);
 
   function handleSubmit(values: LoginParams) {
-    console.log('登陆!', values);
     if (type === 'account') {
+      valuesRef.current = values;
+      if (!visible) {
+        setVisible(true);
+      }
+    }
+  }
+
+  function handleCaptchaCheckChange(checked: boolean, captchaVerification?: string) {
+    if (checked && valuesRef.current) {
       dispatch({
         type: 'userlogin/login',
-        payload: values,
+        payload: {
+          ...valuesRef.current,
+          captchaVO: {
+            captchaVerification,
+          },
+        },
       });
     }
   }
@@ -116,6 +132,14 @@ function Login(props: LoginProps) {
           </Link>
         </div>
       </Form>
+
+      <Verify
+        getCaptcha={getCaptcha}
+        checkCaptcha={checkCaptcha}
+        onCaptchaCheckChange={handleCaptchaCheckChange}
+        visible={visible}
+        onVisibleChange={setVisible}
+      />
     </div>
   );
 }

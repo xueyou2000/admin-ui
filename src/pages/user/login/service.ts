@@ -15,9 +15,7 @@ export interface CaptchaInfo {
  * 获取验证码
  */
 export function getCaptcha() {
-  return request
-    .post<IResponse<CaptchaInfo>>('/captcha/get2', { data: { captchaType: 'blockPuzzle' } })
-    .then(res => res.res);
+  return request.post<VerifyResponse<CaptchaInfo>>('/captcha/get', { data: { captchaType: 'blockPuzzle' } });
 }
 
 /**
@@ -36,9 +34,7 @@ export interface CheckCaptchaParams {
  * 校验验证码
  */
 export function checkCaptcha(params: CheckCaptchaParams) {
-  return request
-    .post<IResponse<{ result: boolean }>>('/captcha/check', { data: params })
-    .then(res => res.res.result);
+  return request.post<VerifyResponse<{ result: boolean }>>('/captcha/check', { data: params });
 }
 
 /**

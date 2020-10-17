@@ -114,7 +114,7 @@ request.interceptors.response.use(async (response, options) => {
         id: 'request.system.error',
         defaultMessage: '系统异常',
       });
-    if (data.status !== 0 && data.status !== 401) {
+    if ('status' in data && data.status !== 0 && data.status !== 401) {
       switch (options.showType) {
         case ErrorShowType.SILENT:
           // do nothing

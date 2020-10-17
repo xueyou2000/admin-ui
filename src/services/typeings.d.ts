@@ -12,3 +12,19 @@ interface IResponse<T = any> {
   /** 重定向地址 */
   redirect?: string;
 }
+
+/**
+ * 验证码插件的响应结构
+ */
+interface VerifyResponse<T = any> {
+  /** 是否错误 */
+  error: boolean;
+  /** 是否成功 */
+  success: boolean;
+  /** 状态码: '0000'=响应成功 */
+  repCode: string;
+  /** 响应数据 */
+  repData: T;
+  /** 错误消息 */
+  repMsg: string;
+}
