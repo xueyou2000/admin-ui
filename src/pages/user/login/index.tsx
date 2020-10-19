@@ -23,11 +23,11 @@ function t(key: string) {
 function Login(props: LoginProps) {
   const { dispatch, submitting } = props;
   const [form] = Form.useForm();
-  const [tabIndex, setTabIndex] = useState<string>('verifySlideLogin');
+  const [tabIndex, setTabIndex] = useState<string>('verify');
   const [visible, setVisible] = useState(false);
 
   function handleSubmit(data: MobileLoginParams) {
-    if (tabIndex === 'verifySlideLogin') {
+    if (tabIndex === 'verify') {
       setVisible(true);
     } else {
       dispatch({
@@ -37,25 +37,28 @@ function Login(props: LoginProps) {
     }
   }
 
+  function handleTabChange(index: string) {
+    dispatch({ type: 'userlogin/resetLoginStatus' });
+    setTabIndex(index);
+  }
+
   return (
     <div className={styles.main}>
       <Form className={styles.login} form={form} onFinish={handleSubmit}>
-        <Tabs activeKey={tabIndex} onChange={setTabIndex} centered={true} animated={true} tabPosition={'top'}>
+        <Tabs activeKey={tabIndex} onChange={handleTabChange} centered={true} animated={true} tabPosition={'top'}>
           <Tabs.TabPane
-            key="verifySlideLogin"
+            key="verify"
             tab={<FormattedMessage id={t('verifySlideLogin.tabName')} defaultMessage="账号密码登陆" />}
           >
             {/*  防止在一个tab内容内操作提交， 另一个tab内执行了表单验证 */}
-            {tabIndex === 'verifySlideLogin' && (
-              <VerifyLoginPanel form={form} visible={visible} onVisibleChange={setVisible} />
-            )}
+            {tabIndex === 'verify' && <VerifyLoginPanel form={form} visible={visible} onVisibleChange={setVisible} />}
           </Tabs.TabPane>
           <Tabs.TabPane
-            key="mobileLogin"
+            key="mobile"
             tab={<FormattedMessage id={t('mobileLogin.tabName')} defaultMessage="手机号登陆" />}
           >
             {/*  防止在一个tab内容内操作提交， 另一个tab内执行了表单验证 */}
-            {tabIndex === 'mobileLogin' && <MobileLoginPanel />}
+            {tabIndex === 'mobile' && <MobileLoginPanel />}
           </Tabs.TabPane>
         </Tabs>
         <div>

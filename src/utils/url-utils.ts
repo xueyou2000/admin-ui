@@ -17,16 +17,19 @@ export function backRedirect() {
   const params = getPageQuery();
   let { redirect } = params as { redirect: string };
   if (redirect) {
-    const redirectUrlParams = new URL(redirect);
-    if (redirectUrlParams.origin === urlParams.origin) {
-      // 如果设置了baseurl， 则可能需要将baseurl也裁剪掉
-      redirect = redirect.substr(urlParams.origin.length);
-      if (redirect.match(/^\/.*#/)) {
-        redirect = redirect.substr(redirect.indexOf('#') + 1);
+    if (redirect.indexOf('http') !== -1) {
+      console.log('redirect', redirect);
+      const redirectUrlParams = new URL(redirect);
+      if (redirectUrlParams.origin === urlParams.origin) {
+        // 如果设置了baseurl， 则可能需要将baseurl也裁剪掉
+        redirect = redirect.substr(urlParams.origin.length);
+        if (redirect.match(/^\/.*#/)) {
+          redirect = redirect.substr(redirect.indexOf('#') + 1);
+        }
+      } else {
+        window.location.href = redirect;
+        return;
       }
-    } else {
-      window.location.href = redirect;
-      return;
     }
   }
   history.replace(redirect || '/');

@@ -1,5 +1,3 @@
-import { LoginRes } from '@/services/login';
-
 interface AuthorithInfo extends LoginRes {
   /** 登陆账户 */
   username: string | null;

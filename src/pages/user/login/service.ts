@@ -1,4 +1,5 @@
 import request from '@/utils/request';
+import { ErrorShowType } from 'umi';
 
 /**
  * 获取验证码
@@ -18,7 +19,7 @@ export function checkCaptcha(params: CheckCaptchaParams) {
  * 滑块验证登陆
  */
 export function loginByCaptcha(params: LoginParams) {
-  return request.post<IResponse<LoginRes>>('/auth/login/captcha', { data: params });
+  return request.post<IResponse<LoginRes>>('/auth/login/captcha', { data: params, showType: ErrorShowType.SILENT });
 }
 
 /**
@@ -34,5 +35,5 @@ export function getMobileCaptcha(mobile: string) {
  * 手机验证码登陆
  */
 export function loginByMobile(params: MobileLoginParams) {
-  return request.post<IResponse<LoginRes>>('/auth/login/mobile', { data: params });
+  return request.post<IResponse<LoginRes>>('/auth/login/mobile', { data: params, showType: ErrorShowType.SILENT });
 }

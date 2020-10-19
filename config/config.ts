@@ -97,10 +97,30 @@ export default defineConfig({
               path: '/user/login',
               component: 'user/login',
             },
+            {
+              component: './error/404',
+            },
           ],
         },
         {
-          component: './error/404',
+          path: '/',
+          component: '@/layouts/BasicLayout',
+          wrappers: ['@/layouts/SecurityLayout'],
+          routes: [
+            {
+              path: '/',
+              redirect: '/dashboard/welcome',
+            },
+            {
+              path: '/dashboard/welcome',
+              name: 'welcome',
+              icon: 'dashboard',
+              component: './dashboard/welcome',
+            },
+            {
+              component: './error/404',
+            },
+          ],
         },
       ],
     },

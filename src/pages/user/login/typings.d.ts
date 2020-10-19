@@ -55,5 +55,5 @@ interface LoginRes {
   /** token过期时间(秒) */
   expire: number;
   /** 用户id */
-  userId: number;
+  userId: string;
 }

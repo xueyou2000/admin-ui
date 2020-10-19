@@ -1,4 +1,5 @@
 export default {
+  'menu.login': '登录',
   'userlogin.autologin': '自动登录',
   'userlogin.forget': '忘记密码',
   'userlogin.loginBtn': '登录',

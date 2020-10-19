@@ -1,4 +1,4 @@
-import Verify from '@/components/verifition/Verify';
+import Verify from '@/components/Verifition/Verify';
 import { LockTwoTone, UserOutlined } from '@ant-design/icons';
 import { Form, Input } from 'antd';
 import { FormInstance } from 'antd/es/form';

@@ -1,5 +1,4 @@
 export default {
-  'menu.login': '登录',
-  'menu.register': '注册',
-  'menu.register.result': '注册结果',
+  'menu.home': '主页',
+  'menu.welcome': '主页',
 };

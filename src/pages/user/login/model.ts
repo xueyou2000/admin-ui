@@ -1,3 +1,4 @@
+import { setAuthority } from '@/utils/authority';
 import { backRedirect } from '@/utils/url-utils';
 import { message } from 'antd';
 import { Effect, Reducer } from 'umi';
@@ -21,6 +22,7 @@ export interface ModelType {
   };
   reducers: {
     changeLoginStatus: Reducer<StateType, { type: 'changeLoginStatus'; payload: StateType }>;
+    resetLoginStatus: Reducer<StateType, { type: 'changeLoginStatus'; payload: StateType }>;
   };
 }
 
@@ -34,11 +36,12 @@ const Model: ModelType = {
         type: 'changeLoginStatus',
         payload: {
           status: response.status === 0 ? 'ok' : 'error',
-          errMsg: response.message,
+          errMsg: response.message || '登陆失败',
         },
       });
 
       if (response.status === 0) {
+        setAuthority({ username: (payload as LoginParams).username, ...response.res });
         message.success('登录成功！');
         backRedirect();
       }
@@ -49,11 +52,12 @@ const Model: ModelType = {
         type: 'changeLoginStatus',
         payload: {
           status: response.status === 0 ? 'ok' : 'error',
-          errMsg: response.message,
+          errMsg: response.message || '登陆失败',
         },
       });
 
       if (response.status === 0) {
+        setAuthority({ username: (payload as MobileLoginParams).mobile, ...response.res });
         message.success('登录成功！');
         backRedirect();
       }
@@ -64,6 +68,9 @@ const Model: ModelType = {
       return {
         ...payload,
       };
+    },
+    resetLoginStatus() {
+      return { status: undefined, errMsg: '' };
     },
   },
 };
