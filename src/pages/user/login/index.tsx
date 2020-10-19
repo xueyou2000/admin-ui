@@ -1,15 +1,16 @@
 import { AlipayCircleOutlined, TaobaoCircleOutlined, WeiboCircleOutlined } from '@ant-design/icons';
 import { Button, Checkbox, Form, Tabs } from 'antd';
-import { FormInstance } from 'antd/es/form';
 import React, { useState } from 'react';
 import { connect, FormattedMessage, Link } from 'umi';
-import LoginByVerifySlide from '../login/components/LoginByVerifySlide';
-import { LoginByPhone } from './components/LoginByPhone';
+import MobileLoginPanel from './components/MobileLoginPanel';
+import VerifyLoginPanel from './components/VerifyLoginPanel';
 import styles from './style.less';
 
 interface LoginProps {
+  /** 模型调度 */
+  dispatch: DispatchX<MobileLoginParams>;
   /** 是否提交中 */
-  submitting?: boolean;
+  submitting: boolean;
 }
 
 function t(key: string) {
@@ -20,34 +21,41 @@ function t(key: string) {
  * 用户登陆页
  */
 function Login(props: LoginProps) {
-  const { submitting } = props;
-  const [form] = Form.useForm<LoginParams>();
+  const { dispatch, submitting } = props;
+  const [form] = Form.useForm();
   const [tabIndex, setTabIndex] = useState<string>('verifySlideLogin');
   const [visible, setVisible] = useState(false);
 
-  function handleSubmit() {
+  function handleSubmit(data: MobileLoginParams) {
     if (tabIndex === 'verifySlideLogin') {
       setVisible(true);
     } else {
-      console.log('TODO: 即将写短信验证码登陆');
+      dispatch({
+        type: 'userlogin/loginByMobile',
+        payload: data,
+      });
     }
   }
 
   return (
     <div className={styles.main}>
       <Form className={styles.login} form={form} onFinish={handleSubmit}>
-        <Tabs animated={true} activeKey={tabIndex} onChange={setTabIndex}>
+        <Tabs activeKey={tabIndex} onChange={setTabIndex} centered={true} animated={true} tabPosition={'top'}>
           <Tabs.TabPane
             key="verifySlideLogin"
             tab={<FormattedMessage id={t('verifySlideLogin.tabName')} defaultMessage="账号密码登陆" />}
           >
-            <LoginByVerifySlide form={form} visible={visible} onVisibleChange={setVisible} />
+            {/*  防止在一个tab内容内操作提交， 另一个tab内执行了表单验证 */}
+            {tabIndex === 'verifySlideLogin' && (
+              <VerifyLoginPanel form={form} visible={visible} onVisibleChange={setVisible} />
+            )}
           </Tabs.TabPane>
           <Tabs.TabPane
-            key="phoneLogin"
-            tab={<FormattedMessage id={t('phoneLogin.tabName')} defaultMessage="手机号登陆" />}
+            key="mobileLogin"
+            tab={<FormattedMessage id={t('mobileLogin.tabName')} defaultMessage="手机号登陆" />}
           >
-            <LoginByPhone />
+            {/*  防止在一个tab内容内操作提交， 另一个tab内执行了表单验证 */}
+            {tabIndex === 'mobileLogin' && <MobileLoginPanel />}
           </Tabs.TabPane>
         </Tabs>
         <div>
@@ -78,5 +86,5 @@ function Login(props: LoginProps) {
 }
 
 export default connect(({ loading }: { loading: EffectLoaing }) => ({
-  submitting: loading.effects['userlogin/loginByCaptcha'],
+  submitting: loading.effects['userlogin/loginByCaptcha'] || loading.effects['userlogin/loginByMobile'],
 }))(Login);

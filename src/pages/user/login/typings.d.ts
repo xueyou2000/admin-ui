@@ -22,7 +22,7 @@ interface CheckCaptchaParams {
 }
 
 /**
- * 登陆参数
+ * 滑块验证登陆参数
  */
 interface LoginParams {
   /** 登陆账号 */
@@ -34,6 +34,16 @@ interface LoginParams {
     /** 验证token aesEncrypt(token + '---' + JSON.stringify({ x: moveLeftDistance, y: 5.0 }), secretKey) */
     captchaVerification: string;
   };
+}
+
+/**
+ * 手机号登陆参数
+ */
+interface MobileLoginParams {
+  /** 登陆手机号 */
+  mobile: string;
+  /** 验证码 */
+  captcha: string;
 }
 
 /**

@@ -10,7 +10,7 @@ import { checkCaptcha, getCaptcha } from '../../service';
 import LoginErrorMessage from '../LoginErrorMessage';
 import styles from './index.less';
 
-interface LoginByVerifySlideProps {
+interface VerifyLoginPanelProps {
   /** 模型调度 */
   dispatch?: DispatchX<LoginParams>;
   /** 模型状态 */
@@ -32,7 +32,7 @@ function t(key: string) {
 /**
  * 滑块验证码登陆
  */
-function LoginByVerifySlide(props: LoginByVerifySlideProps) {
+function VerifyLoginPanel(props: VerifyLoginPanelProps) {
   const { userlogin, submitting, form, dispatch } = props;
   const intl = useIntl();
   const [visible, setVisible] = useMergeValue(false, { value: props.visible, onChange: props.onVisibleChange });
@@ -106,4 +106,4 @@ function LoginByVerifySlide(props: LoginByVerifySlideProps) {
 export default connect(({ userlogin, loading }: { userlogin: StateType; loading: EffectLoaing }) => ({
   userlogin,
   submitting: loading.effects['userlogin/loginByCaptcha'],
-}))(LoginByVerifySlide) as React.FC<LoginByVerifySlideProps>;
+}))(VerifyLoginPanel) as React.FC<VerifyLoginPanelProps>;
