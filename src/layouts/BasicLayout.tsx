@@ -1,6 +1,7 @@
 import logo from '@/assets/logo.svg';
 import Authorized from '@/components/Authorized/Authorized';
 import check from '@/components/Authorized/CheckPermissions';
+import RightContent from '@/components/GlobalHeader/RightContent';
 import icons from '@/config/icons';
 import { GlobalModelState } from '@/models/global';
 import NoAuthorizedPage from '@/pages/error/403';
@@ -15,7 +16,6 @@ import ProLayout, {
 import { getMatchMenu } from '@umijs/route-utils';
 import React, { PropsWithChildren, useEffect, useMemo, useState } from 'react';
 import { connect, Dispatch, Link, useIntl } from 'umi';
-import { ProSettings } from '../../config/defaultSettings';
 
 interface BasicLayoutProps extends ProLayoutProps {
   settings: Settings;
@@ -82,6 +82,7 @@ function BasicLayout(props: PropsWithChildren<BasicLayoutProps>) {
         formatMessage={formatMessage}
         onCollapse={handleMenuCollapse}
         menuDataRender={() => menuDataRender(menuData)}
+        rightContentRender={() => <RightContent />}
         menuItemRender={(menuItemProps, defaultDom) => {
           if (menuItemProps.isUrl || !menuItemProps.path) {
             return defaultDom;
@@ -108,7 +109,7 @@ function BasicLayout(props: PropsWithChildren<BasicLayoutProps>) {
   );
 }
 
-export default connect(({ global, settings }: { global: GlobalModelState; settings: ProSettings }) => ({
+export default connect(({ global, settings }: { global: GlobalModelState; settings: Settings }) => ({
   collapsed: global.collapsed,
   settings,
 }))(BasicLayout);

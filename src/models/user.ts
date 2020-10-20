@@ -4,6 +4,8 @@ import { Effect, Reducer } from 'umi';
 
 export interface UserModelState {
   currentUser: SystemUser | null;
+  notifyCount: number;
+  unreadCount: number;
 }
 
 export interface UserModelType {
@@ -14,14 +16,19 @@ export interface UserModelType {
   };
   reducers: {
     saveCurrentUser: Reducer<UserModelState, { type: 'saveCurrentUser'; payload: SystemUser }>;
+    changeNotifyCount: Reducer<UserModelState>;
   };
 }
 
+const DefaultModel: UserModelState = {
+  currentUser: null,
+  notifyCount: 0,
+  unreadCount: 0,
+};
+
 const UserModel: UserModelType = {
   namespace: 'user',
-  state: {
-    currentUser: null,
-  },
+  state: DefaultModel,
   effects: {
     *fetchCurrent(_, { call, put }) {
       const response: SystemUser = yield call(queryCurrentUser);
@@ -33,8 +40,15 @@ const UserModel: UserModelType = {
     },
   },
   reducers: {
-    saveCurrentUser(_, { payload }) {
-      return { currentUser: payload };
+    saveCurrentUser(state = DefaultModel, { payload }) {
+      return { ...state, currentUser: payload };
+    },
+    changeNotifyCount(state = DefaultModel, { payload }) {
+      return {
+        ...state,
+        notifyCount: payload.notifyCount,
+        unreadCount: payload.unreadCount,
+      };
     },
   },
 };

@@ -1,7 +1,7 @@
 {
   "private": true,
   "scripts": {
-    "start": "umi dev",
+    "start": "cross-env REACT_APP_ENV=dev umi dev",
     "start:dev": "cross-env REACT_APP_ENV=dev MOCK=none umi dev",
     "build": "umi build",
     "analyze": "cross-env ANALYZE=1 umi build",
@@ -23,7 +23,7 @@
   },
   "dependencies": {
     "@ant-design/icons": "^4.2.2",
-    "@ant-design/pro-layout": "^5.0.12",
+    "@ant-design/pro-layout": "^6.5.5",
     "@umijs/plugin-esbuild": "^1.0.1",
     "@umijs/preset-react": "^1.6.10",
     "@umijs/test": "^3.2.23",
@@ -51,7 +51,6 @@
     "cross-env": "^7.0.2",
     "express": "^4.17.1",
     "mockjs": "^1.1.0",
-    "roadhog-api-doc": "^1.1.2",
-    "umi-plugin-antd-theme": "^2.1.2"
+    "roadhog-api-doc": "^1.1.2"
   }
 }

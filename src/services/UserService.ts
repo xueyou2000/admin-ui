@@ -13,3 +13,10 @@ export function queryCurrentUser() {
 export function queryCurrentMenus() {
   return request.post<IResponse<SystemMenu[]>>('/system/menu/user').then(res => res.res);
 }
+
+/**
+ * 查询当前登陆用户通知
+ */
+export function queryNotices() {
+  return request.post<IResponse>('/system/notices/user').then(res => res.res);
+}

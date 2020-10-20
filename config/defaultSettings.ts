@@ -1,14 +1,14 @@
-import { Settings as ProSettings } from '@ant-design/pro-layout';
+import { Settings } from '@ant-design/pro-layout';
 
 /**
  * pro-layout 配置
  * @see https://procomponents.ant.design/components/layout#api
  */
-const proSettings: ProSettings = {
+const proSettings: Settings = {
   /** 导航的主题 */
   navTheme: 'dark',
   /** 菜单模式 */
-  layout: 'sidemenu',
+  layout: 'side',
   /** 主题色 */
   primaryColor: '#1890ff',
   /** 内容布局方式 (Fluid=流体布局， Fixed固定布局) */
@@ -26,7 +26,5 @@ const proSettings: ProSettings = {
   title: 'XueYou Admin',
   iconfontUrl: '',
 };
-
-export type { ProSettings };
 
 export default proSettings;

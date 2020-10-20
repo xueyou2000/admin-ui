@@ -1,7 +1,4 @@
 {
-  "min": true,
-  "ignoreAntd": false,
-  "ignoreProLayout": false,
   "theme": [
     {
       "key": "dark",
