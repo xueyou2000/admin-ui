@@ -23,8 +23,8 @@ declare let ANT_DESIGN_PRO_ONLY_DO_NOT_USE_IN_YOUR_PRODUCTION: 'site' | undefine
 
 declare const REACT_APP_ENV: 'test' | 'dev' | false;
 
-declare interface RequestOptionsInit {
-  fuck: string;
+interface Window {
+  umi_plugin_ant_themeVar: any;
 }
 
 /**
