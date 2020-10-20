@@ -1,7 +1,11 @@
 import logo from '@/assets/logo.svg';
 import Authorized from '@/components/Authorized/Authorized';
 import check from '@/components/Authorized/CheckPermissions';
+import icons from '@/config/icons';
 import { GlobalModelState } from '@/models/global';
+import NoAuthorizedPage from '@/pages/error/403';
+import { queryCurrentMenus } from '@/services/UserService';
+import { toHierarchyMenu, toLayourMenu, toMenuKey } from '@/utils/menu-utils';
 import ProLayout, {
   BasicLayoutProps as ProLayoutProps,
   MenuDataItem,
@@ -9,41 +13,57 @@ import ProLayout, {
   Settings,
 } from '@ant-design/pro-layout';
 import { getMatchMenu } from '@umijs/route-utils';
-import { Result } from 'antd';
-import { ProSettings } from '../../config/defaultSettings';
-import React, { PropsWithChildren, useMemo, useRef } from 'react';
+import React, { PropsWithChildren, useEffect, useMemo, useState } from 'react';
 import { connect, Dispatch, Link, useIntl } from 'umi';
+import { ProSettings } from '../../config/defaultSettings';
 
 interface BasicLayoutProps extends ProLayoutProps {
-  route: ProLayoutProps['route'] & {
-    authority: string[];
-  };
   settings: Settings;
   dispatch: Dispatch;
 }
 
-const noMatch = <Result status={403} title="403" subTitle="Sorry, you are not authorized to access this page." />;
-
-const menuDataRender = (menuList: MenuDataItem[]): MenuDataItem[] =>
-  menuList.map(item => {
+/**
+ * 实现菜单图标和无权限菜单隐藏
+ */
+function menuDataRender(menuList: MenuDataItem[]): MenuDataItem[] {
+  return menuList.map(item => {
     const localItem = {
       ...item,
+      icon: item.icon && icons[item.icon as string],
+      key: item.path,
       children: item.children ? menuDataRender(item.children) : undefined,
     };
-    return check(item.authority, localItem, null) as MenuDataItem;
+    return check(item.authority, localItem, localItem) as MenuDataItem;
   });
+}
 
+/**
+ * 基础布局
+ */
 function BasicLayout(props: PropsWithChildren<BasicLayoutProps>) {
-  const {
-    dispatch,
-    children,
-    settings,
-    location = {
-      pathname: '/',
-    },
-  } = props;
-  const menuDataRef = useRef<MenuDataItem[]>([]);
+  const { dispatch, children, settings, location = { pathname: '/' } } = props;
   const { formatMessage } = useIntl();
+  const [menuData, setMenuData] = useState<MenuDataItem[]>([]);
+  const [menuDataAndKey, setMenuDataAndKey] = useState<MenuDataItem[]>(menuData);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    // 初始化获取菜单
+    queryCurrentMenus().then(faltMenus => {
+      const menus = toLayourMenu(toHierarchyMenu(faltMenus));
+      setMenuData(menus);
+      setMenuDataAndKey(toMenuKey(menus));
+      setLoading(false);
+    });
+  }, []);
+
+  const authorized = useMemo(
+    () =>
+      getMatchMenu(location.pathname || '/', menuDataAndKey).pop() || {
+        authority: undefined,
+      },
+    [menuDataAndKey, location.pathname],
+  );
 
   const handleMenuCollapse = (payload: boolean): void => {
     if (dispatch) {
@@ -54,46 +74,24 @@ function BasicLayout(props: PropsWithChildren<BasicLayoutProps>) {
     }
   };
 
-  const authorized = useMemo(
-    () =>
-      getMatchMenu(location.pathname || '/', menuDataRef.current).pop() || {
-        authority: undefined,
-      },
-    [location.pathname],
-  );
-
   return (
     <>
       <ProLayout
         logo={logo}
-        menuDataRender={menuDataRender}
+        loading={loading}
         formatMessage={formatMessage}
         onCollapse={handleMenuCollapse}
+        menuDataRender={() => menuDataRender(menuData)}
         menuItemRender={(menuItemProps, defaultDom) => {
           if (menuItemProps.isUrl || !menuItemProps.path) {
             return defaultDom;
           }
-
           return <Link to={menuItemProps.path}>{defaultDom}</Link>;
-        }}
-        breadcrumbRender={(routers = []) => [
-          {
-            path: '/',
-            breadcrumbName: formatMessage({
-              id: 'menu.home',
-              defaultMessage: '首页',
-            }),
-          },
-          ...routers,
-        ]}
-        postMenuData={menuData => {
-          menuDataRef.current = menuData || [];
-          return menuData || [];
         }}
         {...props}
         {...settings}
       >
-        <Authorized authority={authorized!.authority} noMatch={noMatch}>
+        <Authorized authority={authorized!.authority} noMatch={<NoAuthorizedPage />}>
           {children}
         </Authorized>
       </ProLayout>

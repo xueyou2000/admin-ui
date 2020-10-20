@@ -25,6 +25,7 @@ function checkPermissions<T, K>(perms: IPermsType, currentPerms: string[], targe
     } else if (perms.includes(currentPerms)) {
       return target;
     }
+
     return Exception;
   }
 

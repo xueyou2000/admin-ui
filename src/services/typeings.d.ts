@@ -113,3 +113,43 @@ interface SystemRole {
   /** 备注 */
   remark: string;
 }
+
+/**
+ * 系统菜单
+ */
+interface SystemMenu {
+  /** 菜单id */
+  menuId: number;
+  /** 菜单名称 */
+  menuName: string;
+  /** 父菜单名称 */
+  parentName: string;
+  /** 父菜单名id */
+  parentId: number;
+  /** 打开方式 (_blank新窗口) */
+  target: string;
+  /** 显示顺序 */
+  orderNum: string;
+  /** 类型:0目录,1菜单,2按钮 */
+  menuType: string;
+  /** 菜单URL */
+  menuKey: string;
+  /** 组件 */
+  component: string;
+  /** 菜单状态:0显示,1隐藏 */
+  visible: string;
+  /** 权限字符串 */
+  perms: string;
+  /** 菜单图标 */
+  icon: string;
+  /** 链接地址 */
+  path: string;
+  /** 重定向地址 */
+  redirect: string;
+  /** 隐藏子菜单 */
+  hiddenChildren: string;
+  /** 隐藏 PageHeader 组件中的页面带的 面包屑和页面标题栏 */
+  hiddenHeader: string;
+  /** 子菜单 */
+  children: SystemMenu[];
+}

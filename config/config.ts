@@ -118,6 +118,28 @@ export default defineConfig({
               component: './dashboard/welcome',
             },
             {
+              path: '/system',
+              icon: 'setting',
+              name: 'system',
+              routes: [
+                {
+                  path: '/system/user',
+                  name: 'user',
+                  icon: 'user',
+                  component: './dashboard/user',
+                },
+                {
+                  path: '/system/role',
+                  name: 'role',
+                  icon: 'safety',
+                  component: './dashboard/role',
+                },
+                {
+                  component: './error/404',
+                },
+              ],
+            },
+            {
               component: './error/404',
             },
           ],
