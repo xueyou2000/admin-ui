@@ -18,7 +18,6 @@ export function backRedirect() {
   let { redirect } = params as { redirect: string };
   if (redirect) {
     if (redirect.indexOf('http') !== -1) {
-      console.log('redirect', redirect);
       const redirectUrlParams = new URL(redirect);
       if (redirectUrlParams.origin === urlParams.origin) {
         // 如果设置了baseurl， 则可能需要将baseurl也裁剪掉

@@ -8,6 +8,15 @@ export function queryCurrentUser() {
 }
 
 /**
+ * 更新当前用户信息
+ *
+ * @param data 用户信息
+ */
+export function updateCurrentUser(data: SystemUser) {
+  return request.post<IResponse<SystemUser>>('/system/user/update', { data });
+}
+
+/**
  * 查询当前登陆用户菜单
  */
 export function queryCurrentMenus() {

@@ -1,8 +1,8 @@
-import { setAuthority } from '@/utils/authority';
-import { backRedirect } from '@/utils/url-utils';
+import { cleanAuthority, setAuthority } from '@/utils/authority';
+import { backRedirect, getPageQuery } from '@/utils/url-utils';
 import { message } from 'antd';
-import { Effect, Reducer } from 'umi';
-import { loginByCaptcha, loginByMobile } from './service';
+import { Effect, Reducer, history } from 'umi';
+import { loginByCaptcha, loginByMobile, logout } from './service';
 
 export interface StateType {
   /** 登陆请求响应状态 */
@@ -19,6 +19,8 @@ export interface ModelType {
     loginByCaptcha: Effect;
     /** 手机验证码登陆 */
     loginByMobile: Effect;
+    /** 注销 */
+    logout: Effect;
   };
   reducers: {
     changeLoginStatus: Reducer<StateType, { type: 'changeLoginStatus'; payload: StateType }>;
@@ -52,7 +54,7 @@ const Model: ModelType = {
         type: 'changeLoginStatus',
         payload: {
           status: response.status === 0 ? 'ok' : 'error',
-          errMsg: response.message || '登陆失败',
+          errMsg: response.message,
         },
       });
 
@@ -61,6 +63,26 @@ const Model: ModelType = {
         message.success('登录成功！');
         backRedirect();
       }
+    },
+    logout(_, { put }) {
+      const { redirect } = getPageQuery();
+      logout();
+      cleanAuthority();
+
+      // Note: There may be security issues, please note
+      if (window.location.pathname !== '/user/login' && !redirect) {
+        history.replace({
+          pathname: '/user/login',
+        });
+      }
+
+      put({
+        type: 'changeLoginStatus',
+        payload: {
+          status: undefined,
+          errMsg: '',
+        },
+      });
     },
   },
   reducers: {

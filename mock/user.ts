@@ -12,7 +12,9 @@ export default delay(
         userType: 'boss',
         email: 'xueyoucd@gmail.com',
         phonenumber: '15521451231',
+        avatar: 'https://gw.alipayobjects.com/zos/antfincdn/XAosXuNZyF/BiazfanxmamNRoxxVxka.png',
         sex: '1',
+        remark: '海纳百川，有容乃大',
         buttons: [
           'system:user:view',
           'monitor:online:view',
@@ -29,6 +31,9 @@ export default delay(
           'system:oss:view',
         ],
       },
+    },
+    'POST /system/user/update': {
+      status: 0,
     },
     'POST /system/notices/user': (req: Request, res: Response) => {
       return res.send({

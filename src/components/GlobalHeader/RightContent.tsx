@@ -5,6 +5,7 @@ import React from 'react';
 import { connect, ConnectProps, SelectLang } from 'umi';
 import styles from './index.less';
 import NoticeIconView from './NoticeIconView';
+import AvatarDropdown from './AvatarDropdown';
 
 interface GlobalHeaderRightProps extends Partial<ConnectProps> {
   layout?: 'side' | 'top' | 'mix';
@@ -43,7 +44,7 @@ function GlobalHeaderRight(props: GlobalHeaderRightProps) {
         </a>
       </Tooltip>
       <NoticeIconView />
-      {/* <Avatar menu={true} /> */}
+      <AvatarDropdown menu={true} />
       {REACT_APP_ENV && (
         <span>
           <Tag color={ENVTagColor[REACT_APP_ENV]}>{REACT_APP_ENV}</Tag>

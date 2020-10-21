@@ -37,3 +37,10 @@ export function getMobileCaptcha(mobile: string) {
 export function loginByMobile(params: MobileLoginParams) {
   return request.post<IResponse<LoginRes>>('/auth/login/mobile', { data: params, showType: ErrorShowType.SILENT });
 }
+
+/**
+ * 注销登陆
+ */
+export function logout() {
+  return request.post<IResponse>('/auth/logout');
+}

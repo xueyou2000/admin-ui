@@ -1,6 +1,7 @@
 import { setPerms } from '@/components/Authorized/perms';
-import { queryCurrentUser } from '@/services/UserService';
-import { Effect, Reducer } from 'umi';
+import { queryCurrentUser, updateCurrentUser } from '@/services/UserService';
+import { message } from 'antd';
+import { Effect, getIntl, getLocale, Reducer } from 'umi';
 
 export interface UserModelState {
   currentUser: SystemUser | null;
@@ -13,6 +14,7 @@ export interface UserModelType {
   state: UserModelState;
   effects: {
     fetchCurrent: Effect;
+    updateCurrentUser: Effect;
   };
   reducers: {
     saveCurrentUser: Reducer<UserModelState, { type: 'saveCurrentUser'; payload: SystemUser }>;
@@ -37,6 +39,15 @@ const UserModel: UserModelType = {
         type: 'saveCurrentUser',
         payload: response,
       });
+    },
+    *updateCurrentUser({ payload }, { call, put }) {
+      const response: IResponse = yield call(updateCurrentUser, payload);
+      if (response.status === 0) {
+        const intl = getIntl(getLocale());
+        message.success(
+          intl.formatMessage({ id: 'settings.basic.update.success', defaultMessage: '更新基本信息成功' }),
+        );
+      }
     },
   },
   reducers: {

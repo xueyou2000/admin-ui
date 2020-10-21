@@ -56,6 +56,9 @@ export default delay(
         });
       }
     },
+    'POST /auth/logout': {
+      status: 0,
+    },
   },
   700,
 );

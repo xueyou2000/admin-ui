@@ -118,6 +118,19 @@ export default defineConfig({
               component: './dashboard/welcome',
             },
             {
+              path: '/profile',
+              icon: 'profile',
+              name: 'profile',
+              routes: [
+                {
+                  path: '/profile/settings',
+                  name: 'settings',
+                  icon: 'setting',
+                  component: './profile/settings',
+                },
+              ],
+            },
+            {
               path: '/system',
               icon: 'setting',
               name: 'system',

@@ -10,6 +10,7 @@ import {
   SoundOutlined,
   TeamOutlined,
   ToolOutlined,
+  UserOutlined,
   VideoCameraOutlined,
 } from '@ant-design/icons';
 import React from 'react';
@@ -27,4 +28,5 @@ export default {
   control: <ControlOutlined />,
   sound: <SoundOutlined />,
   file: <FileSyncOutlined />,
+  profile: <UserOutlined />,
 };

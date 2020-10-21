@@ -1,11 +1,10 @@
-.layout {
-  background-color: red;
-}
+@import '~antd/es/style/themes/default.less';
 
 :global {
   .ant-pro-global-header.ant-pro-global-header-layout-side {
     padding-left: 0;
   }
+
   .ant-pro-global-header {
     .ant-tabs {
       height: 100%;
@@ -16,6 +15,14 @@
     }
     .ant-tabs-top > .ant-tabs-nav::before {
       border: none;
+    }
+  }
+}
+
+@media screen and (max-width: @screen-md) {
+  :global {
+    .ant-pro-global-header .ant-tabs {
+      display: none;
     }
   }
 }
