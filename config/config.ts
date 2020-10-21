@@ -127,12 +127,14 @@ export default defineConfig({
                   name: 'user',
                   icon: 'user',
                   component: './dashboard/user',
+                  wrappers: ['@/components/KeepAliveWapper'],
                 },
                 {
                   path: '/system/role',
                   name: 'role',
                   icon: 'safety',
                   component: './dashboard/role',
+                  wrappers: ['@/components/KeepAliveWapper'],
                 },
                 {
                   component: './error/404',

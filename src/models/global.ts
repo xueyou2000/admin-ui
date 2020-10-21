@@ -1,4 +1,4 @@
-import { Reducer, Effect } from 'umi';
+import { Reducer, Effect, IRoute } from 'umi';
 import { NoticeData } from '@/components/Notice/NoticeTary';
 import { queryNotices } from '@/services/UserService';
 
@@ -13,6 +13,8 @@ export interface GlobalModelState {
   collapsed: boolean;
   /** 系统通知 */
   notices: NoticeItem[];
+  /** 扁平路由配置 */
+  flatRoute: Record<string, IRoute>;
 }
 
 export interface GlobalModelType {
@@ -27,12 +29,14 @@ export interface GlobalModelType {
     changeLayoutCollapsed: Reducer<GlobalModelState, { type: 'changeLayoutCollapsed'; payload: boolean }>;
     saveNotices: Reducer<GlobalModelState>;
     saveClearedNotices: Reducer<GlobalModelState>;
+    changeFlatRoute: Reducer<GlobalModelState, { type: 'changeFlatRoute'; payload: Record<string, IRoute> }>;
   };
 }
 
 const DefaultModel: GlobalModelState = {
   collapsed: false,
   notices: [],
+  flatRoute: {},
 };
 
 const GlobalModel: GlobalModelType = {
@@ -115,6 +119,12 @@ const GlobalModel: GlobalModelType = {
       return {
         ...state,
         notices: state.notices.filter((item): boolean => item.type !== payload),
+      };
+    },
+    changeFlatRoute(state = DefaultModel, { payload }) {
+      return {
+        ...state,
+        flatRoute: payload,
       };
     },
   },

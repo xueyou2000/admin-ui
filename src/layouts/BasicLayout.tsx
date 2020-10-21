@@ -2,11 +2,12 @@ import logo from '@/assets/logo.svg';
 import Authorized from '@/components/Authorized/Authorized';
 import check from '@/components/Authorized/CheckPermissions';
 import RightContent from '@/components/GlobalHeader/RightContent';
+import KeepAliveTabs from '@/components/KeepAliveTabs';
 import icons from '@/config/icons';
 import { GlobalModelState } from '@/models/global';
 import NoAuthorizedPage from '@/pages/error/403';
 import { queryCurrentMenus } from '@/services/UserService';
-import { toHierarchyMenu, toLayourMenu, toMenuKey } from '@/utils/menu-utils';
+import { flatRoute, toHierarchyMenu, toLayourMenu, toMenuKey } from '@/utils/menu-utils';
 import ProLayout, {
   BasicLayoutProps as ProLayoutProps,
   MenuDataItem,
@@ -15,11 +16,13 @@ import ProLayout, {
 } from '@ant-design/pro-layout';
 import { getMatchMenu } from '@umijs/route-utils';
 import React, { PropsWithChildren, useEffect, useMemo, useState } from 'react';
-import { connect, Dispatch, Link, useIntl } from 'umi';
+import { connect, Dispatch, IRoute, Link, useIntl } from 'umi';
+import styles from './BasecLayout.less';
 
 interface BasicLayoutProps extends ProLayoutProps {
   settings: Settings;
   dispatch: Dispatch;
+  routes: IRoute[];
 }
 
 /**
@@ -41,13 +44,19 @@ function menuDataRender(menuList: MenuDataItem[]): MenuDataItem[] {
  * 基础布局
  */
 function BasicLayout(props: PropsWithChildren<BasicLayoutProps>) {
-  const { dispatch, children, settings, location = { pathname: '/' } } = props;
+  const { dispatch, children, settings, location = { pathname: '/' }, routes } = props;
   const { formatMessage } = useIntl();
   const [menuData, setMenuData] = useState<MenuDataItem[]>([]);
   const [menuDataAndKey, setMenuDataAndKey] = useState<MenuDataItem[]>(menuData);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    // 提取扁平路由
+    dispatch({
+      type: 'global/changeFlatRoute',
+      payload: flatRoute(routes),
+    });
+
     // 初始化获取菜单
     queryCurrentMenus().then(faltMenus => {
       const menus = toLayourMenu(toHierarchyMenu(faltMenus));
@@ -57,6 +66,7 @@ function BasicLayout(props: PropsWithChildren<BasicLayoutProps>) {
     });
   }, []);
 
+  // 当前页面授权配置
   const authorized = useMemo(
     () =>
       getMatchMenu(location.pathname || '/', menuDataAndKey).pop() || {
@@ -66,22 +76,22 @@ function BasicLayout(props: PropsWithChildren<BasicLayoutProps>) {
   );
 
   const handleMenuCollapse = (payload: boolean): void => {
-    if (dispatch) {
-      dispatch({
-        type: 'global/changeLayoutCollapsed',
-        payload,
-      });
-    }
+    dispatch({
+      type: 'global/changeLayoutCollapsed',
+      payload,
+    });
   };
 
   return (
     <>
       <ProLayout
+        className={styles.layout}
         logo={logo}
         loading={loading}
         formatMessage={formatMessage}
         onCollapse={handleMenuCollapse}
         menuDataRender={() => menuDataRender(menuData)}
+        headerContentRender={() => <KeepAliveTabs />}
         rightContentRender={() => <RightContent />}
         menuItemRender={(menuItemProps, defaultDom) => {
           if (menuItemProps.isUrl || !menuItemProps.path) {
@@ -92,7 +102,7 @@ function BasicLayout(props: PropsWithChildren<BasicLayoutProps>) {
         {...props}
         {...settings}
       >
-        <Authorized authority={authorized!.authority} noMatch={<NoAuthorizedPage />}>
+        <Authorized authority={authorized.authority} noMatch={<NoAuthorizedPage />}>
           {children}
         </Authorized>
       </ProLayout>

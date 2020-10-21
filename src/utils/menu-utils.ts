@@ -1,4 +1,5 @@
 import { MenuDataItem } from '@ant-design/pro-layout';
+import { IRoute } from 'umi';
 
 /**
  * 菜单格式转换
@@ -20,6 +21,10 @@ export function toLayourMenu(menus: SystemMenu[]): MenuDataItem[] {
   });
 }
 
+/**
+ * 附带key字段
+ * 因为getMatchMenu函数必须是依赖key来提取扁平菜单的
+ */
 export function toMenuKey(menus: MenuDataItem[]): MenuDataItem[] {
   return menus.map(x => {
     return {
@@ -28,6 +33,23 @@ export function toMenuKey(menus: MenuDataItem[]): MenuDataItem[] {
       children: toMenuKey(x.children || []),
     };
   });
+}
+
+/**
+ * 扁平路由
+ */
+export function flatRoute(data: IRoute[], parentName = '') {
+  let keys: { [key: string]: IRoute } = {};
+  data.forEach(item => {
+    let name = parentName ? `${parentName}.${item.name}` : item.name;
+    if (item.path) {
+      keys[item.path] = { ...item, name };
+    }
+    if (item.routes && item.routes.length > 0) {
+      keys = { ...keys, ...flatRoute(item.routes, name) };
+    }
+  });
+  return keys;
 }
 
 /**
