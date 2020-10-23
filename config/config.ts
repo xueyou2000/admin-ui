@@ -143,6 +143,13 @@ export default defineConfig({
                   wrappers: ['@/components/KeepAliveWapper'],
                 },
                 {
+                  path: '/system/permission',
+                  name: 'permission',
+                  icon: 'menu',
+                  component: './system/menu',
+                  wrappers: ['@/components/KeepAliveWapper'],
+                },
+                {
                   path: '/system/role',
                   name: 'role',
                   icon: 'safety',

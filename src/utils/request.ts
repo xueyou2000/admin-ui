@@ -5,7 +5,7 @@
 import { message, Modal, notification } from 'antd';
 import { history, getIntl, getLocale } from 'umi';
 import { extend, ResponseError } from 'umi-request';
-import { getAuthority } from './authority';
+import { cleanAuthority, getAuthority } from './authority';
 
 // 防止一秒内好几个请求，但此时登陆失效，全都401， 弹出多次Modal问题
 let stopAuthprityError = false;
@@ -23,14 +23,18 @@ export enum ErrorShowType {
  */
 function errorHandler(error: ResponseError<IResponse>) {
   const intl = getIntl(getLocale());
+  const { response, request } = error;
+  if (request.options?.showType === ErrorShowType.SILENT) {
+    return response;
+  }
 
-  const { response } = error;
   if (response && response.status) {
     if (response.status === 401) {
       const authority = getAuthority();
       if (authority !== null) {
         if (!stopAuthprityError) {
           stopAuthprityError = true;
+          cleanAuthority();
           Modal.error({
             title: intl.formatMessage({
               id: 'request.unauthorized.error.title',
@@ -107,32 +111,37 @@ request.interceptors.response.use(async (response, options) => {
   const contentType = response.headers.get('Content-Type') || '';
   if (contentType.indexOf('json') !== -1) {
     const data: IResponse = await response.clone().json();
-    // 与后台约定, status !== 0 就算响应失败
-    const errMsg =
-      data.message ||
-      intl.formatMessage({
-        id: 'request.system.error',
-        defaultMessage: '系统异常',
-      });
-    if ('status' in data && data.status !== 0 && data.status !== 401) {
-      switch (options.showType) {
-        case ErrorShowType.SILENT:
-          // do nothing
-          break;
-        case ErrorShowType.WARN_MESSAGE:
-          message.warn(errMsg);
-          break;
-        case ErrorShowType.ERROR_MESSAGE:
-          message.error(errMsg);
-          break;
-        case ErrorShowType.NOTIFICATION:
-          notification.open({
-            message: errMsg,
-          });
-          break;
-        default:
-          message.error(errMsg);
-          break;
+
+    if (response.status < 200 || response.status >= 300) {
+      return response;
+    } else {
+      // 与后台约定, status !== 0 就算响应失败
+      const errMsg =
+        data.message ||
+        intl.formatMessage({
+          id: 'request.system.error',
+          defaultMessage: '系统异常',
+        });
+      if ('status' in data && data.status !== 0) {
+        switch (options.showType) {
+          case ErrorShowType.SILENT:
+            // do nothing
+            break;
+          case ErrorShowType.WARN_MESSAGE:
+            message.warn(errMsg);
+            break;
+          case ErrorShowType.ERROR_MESSAGE:
+            message.error(errMsg);
+            break;
+          case ErrorShowType.NOTIFICATION:
+            notification.open({
+              message: errMsg,
+            });
+            break;
+          default:
+            message.error(errMsg);
+            break;
+        }
       }
     }
   }

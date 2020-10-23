@@ -1,11 +1,11 @@
 import { QuestionCircleOutlined } from '@ant-design/icons';
-import { Tag, Tooltip } from 'antd';
 import { Settings } from '@ant-design/pro-layout';
+import { Tag, Tooltip } from 'antd';
 import React from 'react';
 import { connect, ConnectProps, SelectLang } from 'umi';
+import AvatarDropdown from './AvatarDropdown';
 import styles from './index.less';
 import NoticeIconView from './NoticeIconView';
-import AvatarDropdown from './AvatarDropdown';
 
 interface GlobalHeaderRightProps extends Partial<ConnectProps> {
   layout?: 'side' | 'top' | 'mix';

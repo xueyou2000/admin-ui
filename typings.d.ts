@@ -50,3 +50,19 @@ type DispatchX<P = any, C = (payload: P) => void> = (action: {
   callback?: C;
   [key: string]: any;
 }) => any;
+
+interface Enum {
+  /** 枚举键 */
+  name: string;
+  /** 枚举中文 */
+  desc: string;
+  /** 枚举国际化key */
+  locate?: string;
+}
+
+interface QueryParams {
+  pageSize?: number;
+  currentPage?: number;
+  filter?: { [key: string]: any[] };
+  sorter?: { [key: string]: any };
+}

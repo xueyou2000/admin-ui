@@ -7,10 +7,20 @@
  */
 export default {
   dev: {
+    // '/captcha': {
+    //   target: 'http://antdv.totinlink.com',
+    //   changeOrigin: true,
+    //   pathRewrite: { '^/': '/api/' },
+    // },
     '/captcha': {
-      target: 'http://antdv.totinlink.com',
+      target: 'http://127.0.0.1:8052',
       changeOrigin: true,
-      pathRewrite: { '^/': '/api/' },
+      pathRewrite: { '^': '' },
+    },
+    '/api/': {
+      target: 'http://127.0.0.1:8052',
+      changeOrigin: true,
+      pathRewrite: { '^': '' },
     },
   },
   test: {

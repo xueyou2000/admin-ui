@@ -218,15 +218,21 @@ export default function VerifySlide(props: VerifySlideProps) {
       return;
     }
 
+    const { secretKey, token } = captcha || {};
+
     // 判断是否重合
     var moveLeftDistance = parseInt(moveBlockLeftRef.current.replace('px', '') || '0');
-    moveLeftDistance = (moveLeftDistance * parseFloat(barSize.width)) / parseInt(imgSize.width);
+    moveLeftDistance = (moveLeftDistance * 310) / parseInt(imgSize.width);
     const data: CheckCaptchaParams = {
       captchaType: 'blockPuzzle',
-      token: captcha?.token || '',
-      pointJson: aesEncrypt(JSON.stringify({ x: moveLeftDistance, y: 5.0 }), captcha?.secretKey || ''),
+      token: token || '',
+      pointJson: secretKey
+        ? aesEncrypt(JSON.stringify({ x: moveLeftDistance, y: 5.0 }), secretKey)
+        : JSON.stringify({ x: moveLeftDistance, y: 5.0 }),
     };
-
+    var captchaVerification = secretKey
+      ? aesEncrypt(token + '---' + JSON.stringify({ x: moveLeftDistance, y: 5.0 }), secretKey)
+      : token + '---' + JSON.stringify({ x: moveLeftDistance, y: 5.0 });
     checkCaptcha(data).then(res => {
       const chcked = res.repCode === '0000';
       setVerifyStyle(style => ({
@@ -242,13 +248,7 @@ export default function VerifySlide(props: VerifySlideProps) {
 
       setTimeout(() => {
         if (onCaptchaCheckChange) {
-          onCaptchaCheckChange(
-            chcked,
-            aesEncrypt(
-              captcha?.secretKey || '' + '---' + JSON.stringify({ x: moveLeftDistance, y: 5.0 }),
-              captcha?.secretKey || '',
-            ),
-          );
+          onCaptchaCheckChange(chcked, captchaVerification);
         }
         refresh();
       }, 1000);

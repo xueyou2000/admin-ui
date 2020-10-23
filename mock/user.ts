@@ -3,7 +3,7 @@ import { delay } from 'roadhog-api-doc';
 
 export default delay(
   {
-    'POST /system/user/info': {
+    'POST /api/system/user/info': {
       status: 0,
       res: {
         userId: 1,
@@ -32,10 +32,10 @@ export default delay(
         ],
       },
     },
-    'POST /system/user/update': {
+    'POST /api/system/user/update': {
       status: 0,
     },
-    'POST /system/notices/user': (req: Request, res: Response) => {
+    'POST /api/system/notices/user': (req: Request, res: Response) => {
       return res.send({
         status: 0,
         res: [
@@ -137,7 +137,7 @@ export default delay(
         ],
       });
     },
-    'POST /system/menu/user': (req: Request, res: Response) => {
+    'POST /api/system/menu/user': (req: Request, res: Response) => {
       return res.send({
         status: 0,
         res: [

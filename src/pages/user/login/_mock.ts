@@ -5,7 +5,7 @@ let _captch: string | null = null;
 
 export default delay(
   {
-    'POST /auth/login/captcha': (req: Request, res: Response) => {
+    'POST /api/auth/login/captcha': (req: Request, res: Response) => {
       const { username, password } = req.body;
       if (username === 'admin' && password === 'admin') {
         return res.send({
@@ -23,7 +23,7 @@ export default delay(
         });
       }
     },
-    'POST /auth/mobile-captch': (req: Request, res: Response) => {
+    'POST /api/auth/mobile-captch': (req: Request, res: Response) => {
       const { mobile } = req.query;
       if (mobile && typeof mobile === 'string' && mobile.length > 10) {
         _captch = mobile.slice(0, 4);
@@ -38,7 +38,7 @@ export default delay(
         });
       }
     },
-    'POST /auth/login/mobile': (req: Request, res: Response) => {
+    'POST /api/auth/login/mobile': (req: Request, res: Response) => {
       const { captcha } = req.body;
       if (captcha === _captch) {
         return res.send({
@@ -56,7 +56,7 @@ export default delay(
         });
       }
     },
-    'POST /auth/logout': {
+    'POST /api/auth/logout': {
       status: 0,
     },
   },

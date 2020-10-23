@@ -19,7 +19,7 @@ export function checkCaptcha(params: CheckCaptchaParams) {
  * 滑块验证登陆
  */
 export function loginByCaptcha(params: LoginParams) {
-  return request.post<IResponse<LoginRes>>('/auth/login/captcha', { data: params, showType: ErrorShowType.SILENT });
+  return request.post<IResponse<LoginRes>>('/api/auth/login/captcha', { data: params, showType: ErrorShowType.SILENT });
 }
 
 /**
@@ -28,19 +28,19 @@ export function loginByCaptcha(params: LoginParams) {
  * @param mobile 手机号
  */
 export function getMobileCaptcha(mobile: string) {
-  return request.post<IResponse>(`/auth/mobile-captch?mobile=${mobile}`);
+  return request.post<IResponse>(`/api/auth/mobile-captch?mobile=${mobile}`);
 }
 
 /**
  * 手机验证码登陆
  */
 export function loginByMobile(params: MobileLoginParams) {
-  return request.post<IResponse<LoginRes>>('/auth/login/mobile', { data: params, showType: ErrorShowType.SILENT });
+  return request.post<IResponse<LoginRes>>('/api/auth/login/mobile', { data: params, showType: ErrorShowType.SILENT });
 }
 
 /**
  * 注销登陆
  */
 export function logout() {
-  return request.post<IResponse>('/auth/logout');
+  return request.post<IResponse>('/api/auth/logout');
 }

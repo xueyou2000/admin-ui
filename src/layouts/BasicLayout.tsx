@@ -32,7 +32,7 @@ function menuDataRender(menuList: MenuDataItem[]): MenuDataItem[] {
   return menuList.map(item => {
     const localItem = {
       ...item,
-      icon: item.icon && icons[item.icon as string],
+      icon: icons[item.icon as string],
       key: item.path,
       children: item.children ? menuDataRender(item.children) : undefined,
     };
@@ -91,7 +91,7 @@ function BasicLayout(props: PropsWithChildren<BasicLayoutProps>) {
         formatMessage={formatMessage}
         onCollapse={handleMenuCollapse}
         menuDataRender={() => menuDataRender(menuData)}
-        headerContentRender={() => <KeepAliveTabs />}
+        // headerContentRender={() => <KeepAliveTabs />}
         rightContentRender={() => <RightContent />}
         menuItemRender={(menuItemProps, defaultDom) => {
           if (menuItemProps.isUrl || !menuItemProps.path) {

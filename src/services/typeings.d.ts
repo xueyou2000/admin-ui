@@ -13,6 +13,83 @@ interface IResponse<T = any> {
   redirect?: string;
 }
 
+interface IPage<T = any> {
+  /** 分页数据 */
+  records: T[];
+  /** 总条数 */
+  total: number;
+  /** 当前页码 */
+  current: number;
+  /** 查询条数 */
+  size: number;
+}
+
+/**
+ * 查询配置前台结构(ProTable只能这样)
+ */
+interface TableQueryBase {
+  /** 日期范围  例： dateRange.createTime: ["2020-10-08 15:47:40", "2020-11-11 15:47:40"] */
+  dateRanges?: { [columnsField: string]: string[] };
+  /** 数值范围查询 例: numberRanges.orderNum.min: 1,  orderNum.max: 2,  需要由2个查询条件拼成 */
+  numberRanges?: { [columnsField: string]: { min: number; max: number } };
+  /** 模糊查询 例: fuzzyMatches.menuName: '系统' */
+  fuzzyMatches?: { [columnsField: string]: string };
+  /** 多值匹配查询 例: multiValues.status: ['SUCCESS', 'FAIL'] */
+  multiValues?: { [columnsField: string]: string[] };
+}
+
+/**
+ * 通用查询配置(后台结构)
+ */
+interface QueryBaseDto {
+  /** 排序方式 (DESC=降序, ASC=升序) */
+  direction?: 'DESC' | 'ASC';
+  /** 日期范围查询 */
+  dateRanges?: DateRange[];
+  /** 数值范围查询 */
+  numberRanges?: NumberRange[];
+  /** 模糊查询 */
+  fuzzyMatches?: FuzzyMatch[];
+  /** 多值匹配查询 */
+  multiValues?: MultiMatch[];
+}
+
+/** 日期范围查询 */
+interface DateRange {
+  /** 列名称(字段名) */
+  columnsField: string;
+  /** 起始日期 */
+  startDate: string;
+  /** 结束日期 */
+  endDate: string;
+}
+
+/** 数值范围查询 */
+interface NumberRange {
+  /** 列名称(字段名) */
+  columnsField: string;
+  /** 最小值 */
+  min: number;
+  /** 最大值 */
+  max: number;
+}
+
+/** 模糊查询 */
+interface FuzzyMatch {
+  /** 列名称(字段名) */
+  columnsField: string;
+  /** 模糊值 */
+  value: string;
+}
+
+/** 多值匹配查询 */
+interface MultiMatch {
+  /** 列名称(字段名) */
+  columnsField: string;
+  /** 搜索值 */
+  value: string[];
+}
+
 /**
  * 验证码插件的响应结构
  */
