@@ -25,7 +25,7 @@ function errorHandler(error: ResponseError<IResponse>) {
   const intl = getIntl(getLocale());
   const { response, request } = error;
   if (request.options?.showType === ErrorShowType.SILENT) {
-    return response;
+    throw error;
   }
 
   if (response && response.status) {
@@ -75,7 +75,7 @@ function errorHandler(error: ResponseError<IResponse>) {
     });
   }
 
-  return response;
+  throw error;
 }
 
 /**
@@ -142,6 +142,11 @@ request.interceptors.response.use(async (response, options) => {
             message.error(errMsg);
             break;
         }
+
+        const err = new Error(errMsg) as ResponseError;
+        err.request = { options: options } as any;
+        err.response = response;
+        throw err;
       }
     }
   }
