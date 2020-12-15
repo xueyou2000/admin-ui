@@ -24,7 +24,7 @@ export enum ErrorShowType {
 function errorHandler(error: ResponseError<IResponse>) {
   const intl = getIntl(getLocale());
   const { response, request } = error;
-  if (request.options?.showType === ErrorShowType.SILENT) {
+  if (request.options?.showType === ErrorShowType.SILENT || type === 'skip') {
     throw error;
   }
 
@@ -144,6 +144,7 @@ request.interceptors.response.use(async (response, options) => {
         }
 
         const err = new Error(errMsg) as ResponseError;
+        err.type = 'skip';
         err.request = { options: options } as any;
         err.response = response;
         throw err;
