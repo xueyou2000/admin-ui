@@ -28,6 +28,10 @@ function errorHandler(error: ResponseError<IResponse>) {
     throw error;
   }
 
+  if (data && data.message) {
+    error.message = data.message;
+  }
+
   if (response && response.status) {
     if (response.status === 401) {
       const authority = getAuthority();
@@ -54,7 +58,7 @@ function errorHandler(error: ResponseError<IResponse>) {
       } else {
         history.replace('/user/login?status=unauthorized');
       }
-      throw new Error(data?.message || response.statusText);
+      error.message = data?.message || response.statusText;
     } else {
       message.error(
         intl.formatMessage({

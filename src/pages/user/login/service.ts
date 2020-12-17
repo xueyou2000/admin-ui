@@ -19,7 +19,9 @@ export function checkCaptcha(params: CheckCaptchaParams) {
  * 滑块验证登陆
  */
 export function loginByCaptcha(params: LoginParams) {
-  return request.post<IResponse<LoginRes>>('/api/auth/login/captcha', { data: params, showType: ErrorShowType.SILENT });
+  return request
+    .post<IResponse<LoginRes>>('/api/auth/login/captcha', { data: params, showType: ErrorShowType.SILENT })
+    .then(res => res.res);
 }
 
 /**
@@ -35,7 +37,9 @@ export function getMobileCaptcha(mobile: string) {
  * 手机验证码登陆
  */
 export function loginByMobile(params: MobileLoginParams) {
-  return request.post<IResponse<LoginRes>>('/api/auth/login/mobile', { data: params, showType: ErrorShowType.SILENT });
+  return request
+    .post<IResponse<LoginRes>>('/api/auth/login/mobile', { data: params, showType: ErrorShowType.SILENT })
+    .then(res => res.res);
 }
 
 /**
