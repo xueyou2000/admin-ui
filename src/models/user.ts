@@ -33,20 +33,26 @@ const UserModel: UserModelType = {
   state: DefaultModel,
   effects: {
     *fetchCurrent(_, { call, put }) {
-      const response: SystemUser = yield call(queryCurrentUser);
-      setPerms(response.buttons);
-      yield put({
-        type: 'saveCurrentUser',
-        payload: response,
-      });
+      try {
+        const userInfo: SystemUser = yield call(queryCurrentUser);
+        setPerms(userInfo.buttons);
+        yield put({
+          type: 'saveCurrentUser',
+          payload: userInfo,
+        });
+      } catch (error) {
+        console.log('获取当前登陆用户信息异常:', error);
+      }
     },
     *updateCurrentUser({ payload }, { call, put }) {
-      const response: IResponse = yield call(updateCurrentUser, payload);
-      if (response.status === 0) {
+      try {
+        yield call(updateCurrentUser, payload);
         const intl = getIntl(getLocale());
         message.success(
           intl.formatMessage({ id: 'settings.basic.update.success', defaultMessage: '更新基本信息成功' }),
         );
+      } catch (error) {
+        console.log('更新当前登陆用户信息异常:', error);
       }
     },
   },

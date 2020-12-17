@@ -23,7 +23,7 @@ export enum ErrorShowType {
  */
 function errorHandler(error: ResponseError<IResponse>) {
   const intl = getIntl(getLocale());
-  const { response, request } = error;
+  const { type, response, request, data } = error;
   if (request.options?.showType === ErrorShowType.SILENT || type === 'skip') {
     throw error;
   }
@@ -54,6 +54,7 @@ function errorHandler(error: ResponseError<IResponse>) {
       } else {
         history.replace('/user/login?status=unauthorized');
       }
+      throw new Error(data?.message || response.statusText);
     } else {
       message.error(
         intl.formatMessage({

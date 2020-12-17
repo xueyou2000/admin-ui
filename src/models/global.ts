@@ -44,65 +44,74 @@ const GlobalModel: GlobalModelType = {
   state: DefaultModel,
   effects: {
     *fetchNotices(_, { call, put, select }) {
-      const data = yield call(queryNotices);
-      if (!data) {
-        return;
+      try {
+        const notices = yield call(queryNotices);
+        yield put({
+          type: 'saveNotices',
+          payload: notices,
+        });
+        const unreadCount: number = yield select(
+          (state: { global: GlobalModelState }) => state.global.notices.filter(item => !item.read).length,
+        );
+        yield put({
+          type: 'user/changeNotifyCount',
+          payload: {
+            totalCount: notices.length,
+            unreadCount,
+          },
+        });
+      } catch (error) {
+        console.log('获取系统通知异常:', error);
       }
-      yield put({
-        type: 'saveNotices',
-        payload: data,
-      });
-      const unreadCount: number = yield select(
-        (state: { global: GlobalModelState }) => state.global.notices.filter(item => !item.read).length,
-      );
-      yield put({
-        type: 'user/changeNotifyCount',
-        payload: {
-          totalCount: data.length,
-          unreadCount,
-        },
-      });
     },
     *clearNotices({ payload }, { put, select }) {
-      yield put({
-        type: 'saveClearedNotices',
-        payload,
-      });
-      const count: number = yield select((state: { global: GlobalModelState }) => state.global.notices.length);
-      const unreadCount: number = yield select(
-        (state: { global: GlobalModelState }) => state.global.notices.filter(item => !item.read).length,
-      );
-      yield put({
-        type: 'user/changeNotifyCount',
-        payload: {
-          totalCount: count,
-          unreadCount,
-        },
-      });
+      try {
+        yield put({
+          type: 'saveClearedNotices',
+          payload,
+        });
+        const count: number = yield select((state: { global: GlobalModelState }) => state.global.notices.length);
+        const unreadCount: number = yield select(
+          (state: { global: GlobalModelState }) => state.global.notices.filter(item => !item.read).length,
+        );
+        yield put({
+          type: 'user/changeNotifyCount',
+          payload: {
+            totalCount: count,
+            unreadCount,
+          },
+        });
+      } catch (error) {
+        console.log('清除系统通知异常:', error);
+      }
     },
     *changeNoticeReadState({ payload }, { put, select }) {
-      const notices: NoticeItem[] = yield select((state: { global: GlobalModelState }) =>
-        state.global.notices.map(item => {
-          const notice = { ...item };
-          if (notice.id === payload) {
-            notice.read = true;
-          }
-          return notice;
-        }),
-      );
+      try {
+        const notices: NoticeItem[] = yield select((state: { global: GlobalModelState }) =>
+          state.global.notices.map(item => {
+            const notice = { ...item };
+            if (notice.id === payload) {
+              notice.read = true;
+            }
+            return notice;
+          }),
+        );
 
-      yield put({
-        type: 'saveNotices',
-        payload: notices,
-      });
+        yield put({
+          type: 'saveNotices',
+          payload: notices,
+        });
 
-      yield put({
-        type: 'user/changeNotifyCount',
-        payload: {
-          totalCount: notices.length,
-          unreadCount: notices.filter(item => !item.read).length,
-        },
-      });
+        yield put({
+          type: 'user/changeNotifyCount',
+          payload: {
+            totalCount: notices.length,
+            unreadCount: notices.filter(item => !item.read).length,
+          },
+        });
+      } catch (error) {
+        console.log('改变系统通知已读状态异常:', error);
+      }
     },
   },
   reducers: {
