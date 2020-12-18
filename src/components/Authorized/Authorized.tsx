@@ -18,7 +18,10 @@ function Authorized(props: PropsWithChildren<AuthorizedProps>) {
   } = props;
 
   const childrenRender: React.ReactNode = typeof children === 'undefined' ? null : children;
-  const dom = checkPermissions(authority, currentUser?.buttons || [], childrenRender, noMatch);
+  const dom =
+    currentUser?.admin === 'TRUE'
+      ? children
+      : checkPermissions(authority, currentUser?.buttons || [], childrenRender, noMatch);
   return <>{dom}</>;
 }
 

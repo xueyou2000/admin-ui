@@ -1,34 +1,80 @@
-import ModalContent from '@/components/ModalPopup/ModalContent';
-import ModalFooter from '@/components/ModalPopup/ModalFooter';
-import { useSubmit } from '@/utils/page-utils';
 import { QuestionCircleOutlined, SmileOutlined } from '@ant-design/icons';
-import { Button, Form, Input, InputNumber, message, Select, Switch, Tooltip, TreeSelect } from 'antd';
-import React, { useState } from 'react';
-import { addSystemMenu } from './service';
-import { useSystemPermissions } from './utils';
+import { Form, Input, InputNumber, message, Modal, Select, Switch, Tooltip, TreeSelect } from 'antd';
+import React, { useEffect, useState } from 'react';
+import useMergeValue from 'use-merge-value';
+import { addSystemMenu, querySystemMenuList } from './service';
+import { buildtree } from './utils';
 
-interface MenuAddModalProps {
+interface MenuAddModelProps {
+  visible: boolean;
+  onVisibleChange: (visible: boolean) => void;
+  onConfirm?: () => void;
   parentId?: number;
 }
 
-export default function MenuAddModal(props: MenuAddModalProps) {
-  const { parentId = 0 } = props;
-  const { loading, submitHandle } = useSubmit<SystemMenu>(data =>
-    addSystemMenu(data).then(() => {
-      message.success('新增菜单权限成功');
-    }),
-  );
-  const { permissions } = useSystemPermissions();
+export default function MenuAddModel(props: MenuAddModelProps) {
+  const [form] = Form.useForm();
+  const { onConfirm, parentId = 0 } = props;
+  const [loading, setLoading] = useState(false);
+  const [visible, setVisible] = useMergeValue<boolean>(false, {
+    value: props.visible,
+    onChange: props.onVisibleChange,
+  });
+
+  const [permissions, setPermissions] = useState([{ key: 0, value: 0, title: '无' }]);
   const [menuType, setMenuType] = useState('M');
 
+  useEffect(() => {
+    querySystemMenuList().then(page => {
+      const treeData = [{ key: 0, value: 0, title: '无' }];
+      buildtree(page.records, treeData, 0);
+      setPermissions(treeData);
+    });
+  }, []);
+
+  useEffect(() => {
+    if (visible && form) {
+      form.resetFields();
+    }
+  }, [visible]);
+
+  useEffect(() => {
+    if (parentId && form) {
+      form.setFieldsValue({ parentId });
+    }
+  }, [parentId]);
+
+  async function submitHandle(data: SystemMenu) {
+    setLoading(true);
+    try {
+      await addSystemMenu(data);
+      message.success('新增菜单权限成功');
+      if (onConfirm) {
+        onConfirm();
+      }
+      setVisible(false);
+    } finally {
+      setLoading(false);
+    }
+  }
+
   return (
-    <Form<SystemMenu>
-      onFinish={submitHandle}
-      initialValues={{ parentId, menuType: menuType, target: '', orderNum: 0, visible: '0' }}
-      labelCol={{ xs: { span: 24 }, sm: { span: 5 } }}
-      wrapperCol={{ xs: { span: 24 }, sm: { span: 16 } }}
+    <Modal
+      title="新增菜单/权限"
+      visible={visible}
+      onCancel={() => setVisible(false)}
+      destroyOnClose
+      confirmLoading={loading}
+      onOk={() => form.submit()}
+      width={800}
     >
-      <ModalContent>
+      <Form<SystemMenu>
+        form={form}
+        onFinish={submitHandle}
+        initialValues={{ parentId, menuType: menuType, target: '', orderNum: 0, visible: '0' }}
+        labelCol={{ xs: { span: 24 }, sm: { span: 5 } }}
+        wrapperCol={{ xs: { span: 24 }, sm: { span: 16 } }}
+      >
         <Form.Item name="parentId" label="上级权限" rules={[{ required: true, message: '请选择上级权限' }]}>
           <TreeSelect
             dropdownStyle={{ maxHeight: '400px', overflow: 'auto' }}
@@ -93,13 +139,7 @@ export default function MenuAddModal(props: MenuAddModalProps) {
         </Form.Item>
 
         {menuType !== 'F' && (
-          <Form.Item
-            name="hiddenChildren"
-            label="隐藏子菜单"
-            required={false}
-            getValueProps={val => ({ checked: val === 'TRUE' })}
-            normalize={(val: boolean) => (val ? 'TRUE' : 'FALSE')}
-          >
+          <Form.Item name="hiddenChildren" label="隐藏子菜单" valuePropName="chcked" required={false}>
             <Switch />
           </Form.Item>
         )}
@@ -114,13 +154,7 @@ export default function MenuAddModal(props: MenuAddModalProps) {
             <Select.Option value="1">隐藏</Select.Option>
           </Select>
         </Form.Item>
-      </ModalContent>
-      <ModalFooter>
-        <Button>取消</Button>
-        <Button type="primary" loading={loading} htmlType="submit">
-          确定
-        </Button>
-      </ModalFooter>
-    </Form>
+      </Form>
+    </Modal>
   );
 }

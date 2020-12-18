@@ -1,18 +1,41 @@
+import modalPopup from '@/components/ModalPopup';
 import { SuperTable } from '@/components/SuperTable';
 import { treeData } from '@/utils/object-utils';
 import { PlusOutlined } from '@ant-design/icons';
 import { PageContainer } from '@ant-design/pro-layout';
 import { ActionType, ProColumns } from '@ant-design/pro-table';
-import { Button, DatePicker, Divider, Form } from 'antd';
-import React, { useRef, useState } from 'react';
+import { Button, DatePicker, Divider, Form, message, Modal } from 'antd';
+import React, { useRef } from 'react';
+import { FormattedMessage } from 'umi';
 import { MenuType } from './enums';
+import { querySystemMenuList, removeSystemMenu } from './service';
 import MenuAddModel from './MenuAddModal';
-import { querySystemMenuList } from './service';
+import MenuUpdateModal from './MenuUpdateModal';
+import { autoQuery } from '@/utils/page-utils';
+import { getMenuName } from './utils';
 
 function SystemMenuQuery() {
   const actionRef = useRef<ActionType>();
-  const [addVisible, setAddVisible] = useState<boolean>(false);
-  const [row, setRow] = useState<SystemMenu>();
+  const records = useRef<SystemMenu[]>([]);
+
+  function handleAdd(parentId?: number) {
+    modalPopup(<MenuAddModel parentId={parentId} />, { title: '新增菜单/权限' }, autoQuery(actionRef));
+  }
+
+  function handleUpdate(menu: SystemMenu) {
+    modalPopup(<MenuUpdateModal menu={menu} />, { title: '修改菜单/权限' }, autoQuery(actionRef));
+  }
+
+  function handleRemove(menu: SystemMenu) {
+    Modal.confirm({
+      title: '是否删除菜单?',
+      onOk: () =>
+        removeSystemMenu(menu.menuId).then(() => {
+          message.success('删除菜单成功!');
+          actionRef.current?.reload();
+        }),
+    });
+  }
 
   const columns: ProColumns<SystemMenu>[] = [
     {
@@ -20,8 +43,16 @@ function SystemMenuQuery() {
       dataIndex: 'menuName',
     },
     {
+      title: '菜单名称',
+      dataIndex: 'menuName',
+      renderText: (_: string, record) => {
+        return getMenuName(record, records.current);
+      },
+    },
+    {
       title: '日期范围',
       dataIndex: ['dateRanges', 'createTime'],
+      hideInTable: true,
       renderFormItem: (item, config, form) => {
         return (
           <Form.Item name={item.dataIndex} label="">
@@ -33,10 +64,6 @@ function SystemMenuQuery() {
     {
       title: '路由唯一键',
       dataIndex: 'menuKey',
-    },
-    {
-      title: '组件',
-      dataIndex: 'component',
     },
     {
       title: '排序',
@@ -74,18 +101,11 @@ function SystemMenuQuery() {
       dataIndex: 'action',
       render: (_, record) => (
         <>
-          <a>编辑</a>
+          <a onClick={() => handleUpdate(record)}>编辑</a>
           <Divider type="vertical" />
-          <a
-            onClick={() => {
-              setRow(record);
-              setAddVisible(true);
-            }}
-          >
-            新增
-          </a>
+          <a onClick={() => handleAdd(record.menuId)}>新增</a>
           <Divider type="vertical" />
-          <a>删除</a>
+          <a onClick={() => handleRemove(record)}>删除</a>
         </>
       ),
     },
@@ -103,20 +123,15 @@ function SystemMenuQuery() {
         request={params =>
           querySystemMenuList({ ...params }).then(page => {
             const data = treeData(page.records, 'menuId', 'parentId', 'children', 0);
+            records.current = data;
             return { success: true, data, total: page.total };
           })
         }
         toolBarRender={() => [
-          <Button type="primary" onClick={() => setAddVisible(true)}>
+          <Button type="primary" onClick={() => handleAdd()}>
             <PlusOutlined /> 新建
           </Button>,
         ]}
-      />
-      <MenuAddModel
-        visible={addVisible}
-        onVisibleChange={setAddVisible}
-        onConfirm={() => actionRef.current?.reload()}
-        parentId={row?.menuId}
       />
     </PageContainer>
   );

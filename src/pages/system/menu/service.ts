@@ -1,3 +1,4 @@
+import { toQueryBaseDto } from '@/utils/object-utils';
 import request from '@/utils/request';
 
 /**
@@ -5,9 +6,14 @@ import request from '@/utils/request';
  *
  * @param menu 查询条件
  */
-export function querySystemMenuList(data?: Partial<SystemMenu> & QueryParams & QueryBaseDto) {
+export function querySystemMenuList(data?: Partial<SystemMenu> & QueryParams & TableQueryBase & QueryBase) {
+  if (data) {
+    data.queryBaseDto = toQueryBaseDto(data);
+    data.queryBaseDto.direction = 'ASC';
+    data.queryBaseDto.sortNames = ['order_num'];
+  }
   return request
-    .post<IResponse<IPage<SystemMenu>>>(`/api/system/menu/findByPage/999/1`, { data: { data } })
+    .post<IResponse<IPage<SystemMenu>>>(`/api/system/menu/findByPage/999/1`, { data: { ...data } })
     .then(res => res.res);
 }
 
@@ -16,4 +22,18 @@ export function querySystemMenuList(data?: Partial<SystemMenu> & QueryParams & Q
  */
 export function addSystemMenu(data: SystemMenu) {
   return request.post<IResponse>(`/api/system/menu/add`, { data });
+}
+
+/**
+ * 修改系统菜单
+ */
+export function updateSystemMenu(data: SystemMenu) {
+  return request.post<IResponse>(`/api/system/menu/update`, { data });
+}
+
+/**
+ * 删除系统菜单
+ */
+export function removeSystemMenu(menuId: number) {
+  return request.post<IResponse>(`/api/system/menu/remove`, { params: { menuId } });
 }

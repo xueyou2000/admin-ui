@@ -4,27 +4,27 @@ import { useSubmit } from '@/utils/page-utils';
 import { QuestionCircleOutlined, SmileOutlined } from '@ant-design/icons';
 import { Button, Form, Input, InputNumber, message, Select, Switch, Tooltip, TreeSelect } from 'antd';
 import React, { useState } from 'react';
-import { addSystemMenu } from './service';
+import { updateSystemMenu } from './service';
 import { useSystemPermissions } from './utils';
+import merge from 'lodash/merge';
 
-interface MenuAddModalProps {
-  parentId?: number;
+interface MenuUpdateModalProps {
+  menu: SystemMenu;
 }
 
-export default function MenuAddModal(props: MenuAddModalProps) {
-  const { parentId = 0 } = props;
+export default function MenuUpdayeModal({ menu }: MenuUpdateModalProps) {
+  const { permissions } = useSystemPermissions();
+  const [menuType, setMenuType] = useState('M');
   const { loading, submitHandle } = useSubmit<SystemMenu>(data =>
-    addSystemMenu(data).then(() => {
+    updateSystemMenu(merge({}, menu, data)).then(() => {
       message.success('新增菜单权限成功');
     }),
   );
-  const { permissions } = useSystemPermissions();
-  const [menuType, setMenuType] = useState('M');
 
   return (
     <Form<SystemMenu>
       onFinish={submitHandle}
-      initialValues={{ parentId, menuType: menuType, target: '', orderNum: 0, visible: '0' }}
+      initialValues={menu}
       labelCol={{ xs: { span: 24 }, sm: { span: 5 } }}
       wrapperCol={{ xs: { span: 24 }, sm: { span: 16 } }}
     >

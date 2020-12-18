@@ -31,5 +31,5 @@ interface SystemMenu {
   /** 重定向地址 */
   redirect: string;
   /** 隐藏子菜单 */
-  hiddenChildren: string;
+  hiddenChildren: 'TRUE' | 'FALSE';
 }

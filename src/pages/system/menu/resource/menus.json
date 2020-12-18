@@ -274,7 +274,7 @@
     "icon": "usergroup-add",
     "path": null,
     "redirect": null,
-    "hiddenChildren": null,
+    "hiddenChildren": "TRUE",
     "hiddenHeader": null,
     "remark": null,
     "children": []
@@ -386,7 +386,7 @@
     "icon": "#",
     "path": null,
     "redirect": null,
-    "hiddenChildren": false,
+    "hiddenChildren": null,
     "hiddenHeader": null,
     "remark": null,
     "children": []
@@ -2318,7 +2318,7 @@
     "icon": "#",
     "path": null,
     "redirect": null,
-    "hiddenChildren": null,
+    "hiddenChildren": "TRUE",
     "hiddenHeader": null,
     "remark": null,
     "children": []

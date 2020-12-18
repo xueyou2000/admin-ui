@@ -17,6 +17,12 @@ export default delay(
     'POST /api/system/menu/add': {
       status: 0,
     },
+    'POST /api/system/menu/update': {
+      status: 0,
+    },
+    'POST /api/system/menu/remove': {
+      status: 0,
+    },
   },
   600,
 );

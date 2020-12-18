@@ -44,6 +44,8 @@ interface TableQueryBase {
 interface QueryBaseDto {
   /** 排序方式 (DESC=降序, ASC=升序) */
   direction?: 'DESC' | 'ASC';
+  /** 排序字段 */
+  sortNames?: string[];
   /** 日期范围查询 */
   dateRanges?: DateRange[];
   /** 数值范围查询 */
@@ -52,6 +54,10 @@ interface QueryBaseDto {
   fuzzyMatches?: FuzzyMatch[];
   /** 多值匹配查询 */
   multiValues?: MultiMatch[];
+}
+
+interface QueryBase {
+  queryBaseDto?: QueryBaseDto;
 }
 
 /** 日期范围查询 */
@@ -140,6 +146,8 @@ interface SystemUser {
   roleIds: number[];
   /** 权限信息 */
   buttons: string[];
+  /** 是否超级管理员 */
+  admin: 'TRUE' | 'FALSE';
 }
 
 /**

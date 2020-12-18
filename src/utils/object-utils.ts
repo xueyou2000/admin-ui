@@ -42,6 +42,7 @@ export function toQueryBaseDto(tableQuery: TableQueryBase): QueryBaseDto {
       const val = dateRanges[name];
       result.dateRanges?.push({ columnsField: name, startDate: val[0], endDate: val[1] });
     }
+    delete tableQuery.dateRanges;
   }
 
   if (numberRanges) {
@@ -49,18 +50,21 @@ export function toQueryBaseDto(tableQuery: TableQueryBase): QueryBaseDto {
       const val = numberRanges[name];
       result.numberRanges?.push({ columnsField: name, min: val.min, max: val.max });
     }
+    delete tableQuery.numberRanges;
   }
 
   if (fuzzyMatches) {
     for (let name in fuzzyMatches) {
       result.fuzzyMatches?.push({ columnsField: name, value: fuzzyMatches[name] });
     }
+    delete tableQuery.fuzzyMatches;
   }
 
   if (multiValues) {
     for (let name in multiValues) {
       result.multiValues?.push({ columnsField: name, value: multiValues[name] });
     }
+    delete tableQuery.multiValues;
   }
 
   return result;

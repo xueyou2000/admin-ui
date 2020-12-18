@@ -12,7 +12,7 @@ export default {
   'menu.system.oss': '文件管理',
 
   'menu.monitor': '系统监控',
-  'menu.monitor.online-user': '系统监控',
+  'menu.monitor.online-user': '在线用户',
   'menu.monitor.operlog': '操作日志',
   'menu.monitor.loginLog': '登录日志',
   'menu.monitor.job': '定时任务',
