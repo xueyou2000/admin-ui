@@ -97,7 +97,7 @@ export default function MenuUpdayeModal({ menu }: MenuUpdateModalProps) {
             name="hiddenChildren"
             label="隐藏子菜单"
             required={false}
-            getValueProps={val => ({ checked: val === 'TRUE' })}
+            getValueProps={val => ({ defaultChecked: val === 'TRUE' })}
             normalize={(val: boolean) => (val ? 'TRUE' : 'FALSE')}
           >
             <Switch />
