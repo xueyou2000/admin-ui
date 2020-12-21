@@ -162,6 +162,19 @@ export default defineConfig({
               ],
             },
             {
+              path: '/monitor',
+              icon: 'video-camera',
+              name: 'monitor',
+              routes: [
+                {
+                  path: '/monitor/online',
+                  name: 'online-user',
+                  component: './monitor/online',
+                  wrappers: ['@/components/KeepAliveWapper'],
+                },
+              ],
+            },
+            {
               component: './error/404',
             },
           ],
