@@ -28,14 +28,20 @@ export function treeData<T>(
 /**
  * 转换查询配置
  */
-export function toQueryBaseDto(tableQuery: TableQueryBase): QueryBaseDto {
+export function toQueryBaseDto<T, Query extends QueryBase>(
+  entityName: string,
+  tableQuery?: Partial<T> & TableQueryParams,
+): Query {
+  if (!tableQuery) {
+    return {} as any;
+  }
   const result: QueryBaseDto = {
     dateRanges: [],
     numberRanges: [],
     fuzzyMatches: [],
     multiValues: [],
   };
-  const { dateRanges, numberRanges, fuzzyMatches, multiValues } = tableQuery || {};
+  const { dateRanges, numberRanges, fuzzyMatches, multiValues, direction, sortNames } = tableQuery || {};
 
   if (dateRanges) {
     for (let name in dateRanges) {
@@ -67,5 +73,23 @@ export function toQueryBaseDto(tableQuery: TableQueryBase): QueryBaseDto {
     delete tableQuery.multiValues;
   }
 
-  return result;
+  if (direction) {
+    result.direction = direction;
+    delete tableQuery.direction;
+  }
+
+  if (sortNames) {
+    result.sortNames = sortNames;
+    delete tableQuery.sortNames;
+  }
+
+  delete tableQuery.current;
+  delete tableQuery.pageSize;
+
+  const query: Query = {
+    queryBaseDto: result,
+  } as Query;
+  query[entityName] = tableQuery;
+
+  return query;
 }

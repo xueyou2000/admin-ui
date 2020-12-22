@@ -157,6 +157,12 @@ export default defineConfig({
                   wrappers: ['@/components/KeepAliveWapper'],
                 },
                 {
+                  path: '/system/dict',
+                  name: 'dict',
+                  component: './system/dict',
+                  wrappers: ['@/components/KeepAliveWapper'],
+                },
+                {
                   component: './error/404',
                 },
               ],

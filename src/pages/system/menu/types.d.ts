@@ -33,3 +33,7 @@ interface SystemMenu {
   /** 隐藏子菜单 */
   hiddenChildren: 'TRUE' | 'FALSE';
 }
+
+interface SystemMenuQuery extends QueryBase {
+  menu?: SystemMenu;
+}

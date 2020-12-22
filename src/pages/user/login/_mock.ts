@@ -30,6 +30,11 @@ export default delay(
         return res.send({
           status: 0,
           message: '发送成功',
+          res: {
+            userId: 1,
+            token: 'xxxxx',
+            expire: 14000,
+          },
         });
       } else {
         return res.send({
@@ -51,12 +56,19 @@ export default delay(
         });
       } else {
         return res.send({
-          status: -1,
-          message: '验证码错误',
+          status: 0,
+          res: {
+            userId: 1,
+            token: 'xxxxx',
+            expire: 14000,
+          },
         });
       }
     },
     'POST /api/auth/logout': {
+      status: 0,
+    },
+    'POST /captcha/get': {
       status: 0,
     },
   },

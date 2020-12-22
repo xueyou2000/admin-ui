@@ -13,6 +13,7 @@ import MenuAddModel from './MenuAddModal';
 import MenuUpdateModal from './MenuUpdateModal';
 import { autoQuery } from '@/utils/page-utils';
 import { getMenuName } from './utils';
+import HasPermission from '@/components/Authorized/HasPermission';
 
 function SystemMenuQuery() {
   const actionRef = useRef<ActionType>();
@@ -39,14 +40,15 @@ function SystemMenuQuery() {
 
   const columns: ProColumns<SystemMenu>[] = [
     {
-      title: '权限名称',
+      title: '菜单名称',
       dataIndex: 'menuName',
     },
     {
       title: '菜单名称',
       dataIndex: 'menuName',
+      search: false,
       renderText: (_: string, record) => {
-        return getMenuName(record, records.current);
+        return getMenuName(record);
       },
     },
     {
@@ -99,13 +101,24 @@ function SystemMenuQuery() {
       title: '操作',
       width: '150px',
       dataIndex: 'action',
+      search: false,
       render: (_, record) => (
         <>
-          <a onClick={() => handleUpdate(record)}>编辑</a>
-          <Divider type="vertical" />
-          <a onClick={() => handleAdd(record.menuId)}>新增</a>
-          <Divider type="vertical" />
-          <a onClick={() => handleRemove(record)}>删除</a>
+          <HasPermission authority="system:menu:update">
+            <a onClick={() => handleUpdate(record)}>编辑</a>
+            <Divider type="vertical" />
+          </HasPermission>
+
+          {record.menuType !== 'F' && (
+            <HasPermission authority="system:menu:add">
+              <a onClick={() => handleAdd(record.menuId)}>新增</a>
+              <Divider type="vertical" />
+            </HasPermission>
+          )}
+
+          <HasPermission authority="system:menu:remove">
+            <a onClick={() => handleRemove(record)}>删除</a>
+          </HasPermission>
         </>
       ),
     },
@@ -119,7 +132,9 @@ function SystemMenuQuery() {
         columns={columns}
         actionRef={actionRef}
         pagination={false}
-        search={{ labelWidth: 120 }}
+        search={{
+          layout: 'vertical',
+        }}
         request={params =>
           querySystemMenuList({ ...params }).then(page => {
             const data = treeData(page.records, 'menuId', 'parentId', 'children', 0);
@@ -128,9 +143,11 @@ function SystemMenuQuery() {
           })
         }
         toolBarRender={() => [
-          <Button type="primary" onClick={() => handleAdd()}>
-            <PlusOutlined /> 新建
-          </Button>,
+          <HasPermission key="add" authority="system:menu:add">
+            <Button type="primary" onClick={() => handleAdd()}>
+              <PlusOutlined /> 新建
+            </Button>
+          </HasPermission>,
         ]}
       />
     </PageContainer>

@@ -41,9 +41,9 @@ export function SuperTable<T, U extends { [key: string]: any } = {}>(props: ProT
     queryByParams();
   });
 
-  useEffect(() => {
-    queryByParams();
-  }, []);
+  // useEffect(() => {
+  //   queryByParams();
+  // }, []);
 
   return <ProTable<T, U> {...props} formRef={formRef} actionRef={actionRef} />;
 }

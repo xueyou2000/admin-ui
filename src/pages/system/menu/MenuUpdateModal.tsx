@@ -14,7 +14,7 @@ interface MenuUpdateModalProps {
 
 export default function MenuUpdayeModal({ menu }: MenuUpdateModalProps) {
   const { permissions } = useSystemPermissions();
-  const [menuType, setMenuType] = useState('M');
+  const [menuType, setMenuType] = useState(menu.menuType);
   const { loading, submitHandle } = useSubmit<SystemMenu>(data =>
     updateSystemMenu(merge({}, menu, data)).then(() => {
       message.success('新增菜单权限成功');
@@ -38,7 +38,7 @@ export default function MenuUpdayeModal({ menu }: MenuUpdateModalProps) {
           ></TreeSelect>
         </Form.Item>
         <Form.Item name="menuType" label="菜单类型" rules={[{ required: true, message: '请选择类型' }]}>
-          <Select<string> onChange={setMenuType}>
+          <Select<'M' | 'C' | 'F'> onChange={setMenuType}>
             <Select.Option value="M">目录</Select.Option>
             <Select.Option value="C">菜单</Select.Option>
             <Select.Option value="F">按钮</Select.Option>
@@ -47,11 +47,15 @@ export default function MenuUpdayeModal({ menu }: MenuUpdateModalProps) {
         <Form.Item name="menuName" label="权限名称" rules={[{ required: true, message: '请输入权限名称' }]}>
           <Input placeholder="请输入权限名称" />
         </Form.Item>
-        <Form.Item name="menuKey" label="路由唯一键" rules={[{ required: true, message: '请输入动态菜单唯一键' }]}>
+        <Form.Item
+          name="menuKey"
+          label="路由唯一键"
+          rules={[{ required: menuType !== 'F', message: '请输入动态菜单唯一键' }]}
+        >
           <Input placeholder="路由唯一键：如'user'" />
         </Form.Item>
         {menuType !== 'M' && (
-          <Form.Item name="perms" label="权限标识" rules={[{ required: true, message: '请输入权限标识' }]}>
+          <Form.Item name="perms" label="权限标识">
             <Input placeholder="权限标识" />
           </Form.Item>
         )}

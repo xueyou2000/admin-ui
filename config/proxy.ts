@@ -13,12 +13,12 @@ export default {
     //   pathRewrite: { '^/': '/api/' },
     // },
     '/captcha': {
-      target: 'http://127.0.0.1:8052',
+      target: 'http://127.0.0.1:8053',
       changeOrigin: true,
       pathRewrite: { '^': '' },
     },
     '/api/': {
-      target: 'http://127.0.0.1:8052',
+      target: 'http://127.0.0.1:8053',
       changeOrigin: true,
       pathRewrite: { '^': '' },
     },

@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { getIntl, getLocale, useIntl } from 'umi';
+import { getIntl, getLocale } from 'umi';
 import { querySystemMenuList } from './service';
 
 /**
@@ -15,7 +15,7 @@ export function buildtree(list: SystemMenu[], arr: any[], parentId: number) {
       var child = {
         key: item.menuId,
         value: item.menuId,
-        title: getMenuName(item, list),
+        title: getMenuName(item),
         children: [],
       };
       buildtree(list, child.children, item.menuId);
@@ -41,15 +41,7 @@ export function useSystemPermissions() {
   return { permissions };
 }
 
-export function getMenuName(menu: SystemMenu, menus: SystemMenu[]) {
+export function getMenuName(menu: SystemMenu) {
   const intl = getIntl(getLocale());
-
-  let fullMenuKey = 'menu.';
-  if (menu.parentId !== 0) {
-    const parent = menus.find(x => x.menuId === menu.parentId);
-    if (parent) {
-      fullMenuKey = fullMenuKey + parent.menuName + '.';
-    }
-  }
-  return intl.formatMessage({ id: fullMenuKey + menu.menuName, defaultMessage: menu.menuName });
+  return intl.formatMessage({ id: `menu.${menu.menuName}`, defaultMessage: menu.menuName });
 }

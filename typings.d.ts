@@ -62,7 +62,7 @@ interface Enum {
 
 interface QueryParams {
   pageSize?: number;
-  currentPage?: number;
+  current?: number;
   filter?: { [key: string]: any[] };
   sorter?: { [key: string]: any };
 }

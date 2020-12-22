@@ -88,6 +88,9 @@ function BasicLayout(props: PropsWithChildren<BasicLayoutProps>) {
         className={styles.layout}
         logo={logo}
         loading={loading}
+        menu={{
+          loading,
+        }}
         formatMessage={formatMessage}
         onCollapse={handleMenuCollapse}
         menuDataRender={() => menuDataRender(menuData)}
@@ -100,7 +103,6 @@ function BasicLayout(props: PropsWithChildren<BasicLayoutProps>) {
           return <Link to={menuItemProps.path}>{defaultDom}</Link>;
         }}
         {...props}
-        {...settings}
       >
         <Authorized authority={authorized.authority} noMatch={<NoAuthorizedPage />}>
           {children}

@@ -38,6 +38,13 @@ interface TableQueryBase {
   multiValues?: { [columnsField: string]: string[] };
 }
 
+interface TableQueryParams extends TableQueryBase, QueryParams {
+  /** 排序方式 (DESC=降序, ASC=升序) */
+  direction?: 'DESC' | 'ASC';
+  /** 排序字段 */
+  sortNames?: string[];
+}
+
 /**
  * 通用查询配置(后台结构)
  */

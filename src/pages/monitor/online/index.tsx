@@ -63,6 +63,7 @@ export default function UserOnlineQuery() {
       title: '操作',
       width: '150px',
       dataIndex: 'action',
+      search: false,
       render: (_, record) => (
         <>
           <HasPermission authority="monitor:online:forceLogout">

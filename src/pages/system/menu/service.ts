@@ -6,14 +6,15 @@ import request from '@/utils/request';
  *
  * @param menu 查询条件
  */
-export function querySystemMenuList(data?: Partial<SystemMenu> & QueryParams & TableQueryBase & QueryBase) {
-  if (data) {
-    data.queryBaseDto = toQueryBaseDto(data);
-    data.queryBaseDto.direction = 'ASC';
-    data.queryBaseDto.sortNames = ['order_num'];
+export function querySystemMenuList(data?: Partial<SystemMenu> & TableQueryParams) {
+  const queryData = toQueryBaseDto<SystemMenu, SystemMenuQuery>('menu', data);
+  if (queryData.queryBaseDto) {
+    queryData.queryBaseDto.direction = 'ASC';
+    queryData.queryBaseDto.sortNames = ['order_num'];
   }
+
   return request
-    .post<IResponse<IPage<SystemMenu>>>(`/api/system/menu/findByPage/999/1`, { data: { ...data } })
+    .post<IResponse<IPage<SystemMenu>>>(`/api/system/menu/findByPage/999/1`, { data: queryData })
     .then(res => res.res);
 }
 

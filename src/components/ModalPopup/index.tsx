@@ -57,6 +57,8 @@ function ModalPopup(
   );
 }
 
+// const ModalPopupConnect = connect()(ModalPopup);
+
 export default function modalPopup(
   content: React.ReactChild,
   options: ModalProps & { onAfterClose?: (args?: any) => void },
@@ -71,7 +73,7 @@ export default function modalPopup(
       destroyOnClose={true}
       footer={null}
       {...options}
-      onAfterClose={args => {
+      onAfterClose={(args: any) => {
         ReactDOM.unmountComponentAtNode(div);
         div.parentNode?.removeChild(div);
         if (onClose) {

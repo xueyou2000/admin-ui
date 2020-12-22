@@ -9,12 +9,12 @@ import { IRoute } from 'umi';
 export function toLayourMenu(menus: SystemMenu[]): MenuDataItem[] {
   return menus.map(x => {
     return {
-      authority: x.perms,
-      hideChildrenInMenu: x.hiddenChildren === '0',
+      // authority: x.perms,
+      hideChildrenInMenu: x.hiddenChildren === 'TRUE',
       icon: x.icon,
-      name: x.menuName,
+      name: getMenuLastName(x.menuName),
       path: x.target === '_blank' ? x.path : x.menuKey,
-      target: x.target,
+      // target: x.target,
       // key: x.menuKey,
       children: toLayourMenu(x.children),
     };
@@ -58,18 +58,30 @@ export function flatRoute(data: IRoute[], parentName = '') {
  * @param menus
  * @param parentId
  */
-export function toHierarchyMenu(menus: SystemMenu[], parentId = 0, parentPath = '/') {
+export function toHierarchyMenu(menus: SystemMenu[], parentId = 0) {
   const _menus: SystemMenu[] = [];
   menus = menus.sort((x, y) => parseInt(x.orderNum) - parseInt(y.orderNum));
   menus.forEach(menu => {
     if (menu.parentId === parentId) {
       // 递归子菜单
       const children = menus.filter(x => x.parentId === menu.menuId);
-      const path = parentPath + menu.menuKey.replace(/^\//, '');
-      menu.menuKey = path;
-      menu.children = toHierarchyMenu(children, menu.menuId, path + '/');
+      // const path = parentPath + menu.menuKey.replace(/^\//, '');
+      // menu.menuKey = path;
+      menu.children = toHierarchyMenu(children, menu.menuId);
       _menus.push(menu);
     }
   });
   return _menus;
+}
+
+/**
+ * 获取菜单名称最后一级
+ */
+export function getMenuLastName(menuName: string) {
+  if (menuName.indexOf('.') === -1) {
+    return menuName;
+  } else {
+    const names = menuName.split('.');
+    return names[names.length - 1];
+  }
 }
