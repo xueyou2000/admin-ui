@@ -24,7 +24,7 @@ export default function AddDictDataModal({ dictData }: { dictData: DictData }) {
         <Form.Item name="dictLabel" label="字典标签" rules={[{ required: true, message: '请输入字典标签' }]}>
           <Input placeholder="请输入字典标签" />
         </Form.Item>
-        <Form.Item name="dictType" label="字典键值" rules={[{ required: true, message: '请输入字典键值' }]}>
+        <Form.Item name="dictValue" label="字典键值" rules={[{ required: true, message: '请输入字典键值' }]}>
           <Input placeholder="请输入字典键值" />
         </Form.Item>
         <Form.Item name="dictSort" label="字典排序" rules={[{ required: true, message: '请输入字典排序' }]}>

@@ -82,3 +82,12 @@ export function updateDictData(data: DictType) {
 export function removeDictData(ids: number[]) {
   return request.post<IResponse>(`/api/system/dict/data/remove`, { params: { ids } });
 }
+
+/**
+ * 获取字典数据
+ */
+export function findDictDataByTypes(types: string[]) {
+  return request
+    .post<IResponse>(`/api/system/dict/data/findByTypes`, { params: { types } })
+    .then(res => res.res);
+}

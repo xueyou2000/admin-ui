@@ -178,6 +178,16 @@ export default defineConfig({
                   component: './monitor/online',
                   wrappers: ['@/components/KeepAliveWapper'],
                 },
+                {
+                  path: '/monitor/operLog',
+                  component: './monitor/operLog',
+                  wrappers: ['@/components/KeepAliveWapper'],
+                },
+                {
+                  path: '/monitor/loginLog',
+                  component: './monitor/loginLog',
+                  wrappers: ['@/components/KeepAliveWapper'],
+                },
               ],
             },
             {

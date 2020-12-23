@@ -237,6 +237,18 @@ export default delay(
     'POST /api/system/dict/data/remove': {
       status: 0,
     },
+    'POST /api/system/dict/data/findByTypes': (req: Request, res: Response) => {
+      const { types } = req.query;
+      const map: any = {};
+      [].forEach.call(types, type => {
+        map[type] = [{ dictLabel: '测试字典', dictValue: 'TEST', status: 'TRUE' }];
+      });
+      return res.send({
+        status: 0,
+        res:
+          typeof types === 'string' ? { [types]: [{ dictLabel: '测试字典', dictValue: 'TEST', status: 'TRUE' }] } : map,
+      });
+    },
   },
   600,
 );

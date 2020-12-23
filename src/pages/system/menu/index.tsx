@@ -6,7 +6,6 @@ import { PageContainer } from '@ant-design/pro-layout';
 import { ActionType, ProColumns } from '@ant-design/pro-table';
 import { Button, DatePicker, Divider, Form, message, Modal } from 'antd';
 import React, { useRef } from 'react';
-import { FormattedMessage } from 'umi';
 import { MenuType } from './enums';
 import { querySystemMenuList, removeSystemMenu } from './service';
 import MenuAddModel from './MenuAddModal';
@@ -55,7 +54,7 @@ function SystemMenuQuery() {
       title: '日期范围',
       dataIndex: ['dateRanges', 'createTime'],
       hideInTable: true,
-      renderFormItem: (item, config, form) => {
+      renderFormItem: item => {
         return (
           <Form.Item name={item.dataIndex} label="">
             <DatePicker.RangePicker />

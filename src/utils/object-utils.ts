@@ -93,3 +93,18 @@ export function toQueryBaseDto<T, Query extends QueryBase>(
 
   return query;
 }
+
+/**
+ * 对象key转数组
+ * @param obj
+ */
+export function objectKeyToArray(obj: any) {
+  if (!obj) {
+    return [];
+  }
+  const keys = [];
+  for (let key in obj) {
+    keys.push(key);
+  }
+  return keys;
+}

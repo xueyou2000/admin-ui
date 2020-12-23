@@ -16,6 +16,8 @@ interface DictType {
   createTime: string;
 }
 
+type DictMaps = { [key: string]: DictData[] };
+
 interface DictTypeQuery extends QueryBase {
   dictType?: DictType;
 }
