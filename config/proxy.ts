@@ -22,6 +22,11 @@ export default {
       changeOrigin: true,
       pathRewrite: { '^': '' },
     },
+    '/file/': {
+      target: 'http://127.0.0.1:8053',
+      changeOrigin: true,
+      pathRewrite: { '^': '' },
+    },
   },
   test: {
     '/api/': {

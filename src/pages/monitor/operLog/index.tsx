@@ -1,17 +1,20 @@
 import HasPermission from '@/components/Authorized/HasPermission';
+import modalPopup from '@/components/ModalPopup';
 import { SuperTable } from '@/components/SuperTable';
-import { CloseOutlined } from '@ant-design/icons';
+import { toQueryBaseDto } from '@/utils/object-utils';
+import { dictToValueEnum, useDicts } from '@/utils/page-utils';
+import { AlignLeftOutlined, CloseOutlined } from '@ant-design/icons';
 import { PageContainer } from '@ant-design/pro-layout';
 import { ActionType, ProColumns } from '@ant-design/pro-table';
 import { Button, DatePicker, Form, message, Modal, Space } from 'antd';
-import React, { useRef } from 'react';
-import { cleanOperLog, queryOperLogByPage, removeOperLog } from './service';
+import { FormInstance } from 'antd/es/form';
 import * as dayjs from 'dayjs';
-import { dictToValueEnum, useDicts } from '@/utils/page-utils';
+import React, { useRef } from 'react';
 import OperLogDetailModal from './DetailDialog';
-import modalPopup from '@/components/ModalPopup';
+import { cleanOperLog, exportOperLog, queryOperLogByPage, removeOperLog } from './service';
 
 export default function OperLogQuery() {
+  const formRef = useRef<FormInstance<OperLog>>();
   const actionRef = useRef<ActionType>();
   const dictMaps = useDicts({
     sys_oper_type: [],
@@ -46,6 +49,12 @@ export default function OperLogQuery() {
           }
           actionRef.current?.reload();
         }),
+    });
+  }
+
+  function handleExport() {
+    exportOperLog(formRef.current?.getFieldsValue()).then(fileName => {
+      window.open(`/file/tmp-download/${fileName}`);
     });
   }
 
@@ -132,6 +141,7 @@ export default function OperLogQuery() {
         headerTitle="操作日志"
         rowKey="operId"
         columns={columns}
+        formRef={formRef}
         pagination={{ pageSize: 10 }}
         actionRef={actionRef}
         search={{ labelWidth: 120 }}
@@ -144,6 +154,11 @@ export default function OperLogQuery() {
           <HasPermission key="add" authority="monitor:operlog:remove">
             <Button type="ghost" danger onClick={handleClean}>
               <CloseOutlined /> 清空
+            </Button>
+          </HasPermission>,
+          <HasPermission key="add" authority="monitor:operlog:export">
+            <Button type="default" onClick={handleExport}>
+              <AlignLeftOutlined /> 导出
             </Button>
           </HasPermission>,
         ]}

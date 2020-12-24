@@ -6,7 +6,7 @@ import { toQueryBaseDto } from '@/utils/object-utils';
  */
 export function queryOperLogByPage(data?: Partial<OperLog> & TableQueryParams) {
   const { pageSize, current } = data || {};
-  const queryData = toQueryBaseDto<LoginInfo, LoginInfoQuery>('loginInfo', data);
+  const queryData = toQueryBaseDto<OperLog, OperLogQuery>('operLog', data);
   if (queryData.queryBaseDto) {
     queryData.queryBaseDto.sortNames = ['oper_time'];
   }
@@ -30,4 +30,22 @@ export function removeOperLog(ids: number[]) {
  */
 export function cleanOperLog() {
   return request.post<IResponse>(`/api/monitor/operLog/clean`);
+}
+
+/**
+ * 导出操作日志
+ *
+ * @returns 返回导出文件名称
+ */
+export function exportOperLog(data?: Partial<OperLog> & TableQueryParams) {
+  const queryData = toQueryBaseDto<OperLog, OperLogQuery>('operLog', data || {});
+  if (queryData.queryBaseDto) {
+    queryData.queryBaseDto.sortNames = ['oper_time'];
+  }
+
+  return request
+    .post<IResponse<string>>(`/api/monitor/operLog/export`, {
+      data: queryData,
+    })
+    .then(res => res.res);
 }

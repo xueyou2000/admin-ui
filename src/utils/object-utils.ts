@@ -46,7 +46,9 @@ export function toQueryBaseDto<T, Query extends QueryBase>(
   if (dateRanges) {
     for (let name in dateRanges) {
       const val = dateRanges[name];
-      result.dateRanges?.push({ columnsField: name, startDate: val[0], endDate: val[1] });
+      if (val) {
+        result.dateRanges?.push({ columnsField: name, startDate: val[0], endDate: val[1] });
+      }
     }
     delete tableQuery.dateRanges;
   }
@@ -54,7 +56,9 @@ export function toQueryBaseDto<T, Query extends QueryBase>(
   if (numberRanges) {
     for (let name in numberRanges) {
       const val = numberRanges[name];
-      result.numberRanges?.push({ columnsField: name, min: val.min, max: val.max });
+      if (val) {
+        result.numberRanges?.push({ columnsField: name, min: val.min, max: val.max });
+      }
     }
     delete tableQuery.numberRanges;
   }
