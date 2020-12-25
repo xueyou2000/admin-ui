@@ -12,7 +12,7 @@ export function queryLoginLogByPage(data?: Partial<LoginInfo> & TableQueryParams
   }
 
   return request
-    .post<IResponse<IPage<LoginInfo>>>(`/api/monitor/loginInfo/findByPage/${pageSize}/${current}`, {
+    .post<IResponse<IPage<LoginInfo>>>(`/monitor/loginInfo/findByPage/${pageSize}/${current}`, {
       data: queryData,
     })
     .then(res => res.res);
@@ -22,12 +22,12 @@ export function queryLoginLogByPage(data?: Partial<LoginInfo> & TableQueryParams
  * 删除登陆日志
  */
 export function removeLoginLog(ids: number[]) {
-  return request.post<IResponse>(`/api/monitor/loginInfo/remove`, { params: { ids } });
+  return request.post<IResponse>(`/monitor/loginInfo/remove`, { params: { ids } });
 }
 
 /**
  * 清空登陆日志
  */
 export function cleanLoginLog() {
-  return request.post<IResponse>(`/api/monitor/loginInfo/clean`);
+  return request.post<IResponse>(`/monitor/loginInfo/clean`);
 }

@@ -77,6 +77,9 @@ export default defineConfig({
   },
   devServer: {},
   proxy: proxy[REACT_APP_ENV || 'dev'],
+  define: {
+    'process.env.HTTP_BASE_URL': '/api',
+  },
   // umi routes: https://umijs.org/docs/routing
   routes: [
     {
@@ -174,8 +177,12 @@ export default defineConfig({
               routes: [
                 {
                   path: '/monitor/online',
-                  name: 'online-user',
                   component: './monitor/online',
+                  wrappers: ['@/components/KeepAliveWapper'],
+                },
+                {
+                  path: '/monitor/job',
+                  component: './monitor/job',
                   wrappers: ['@/components/KeepAliveWapper'],
                 },
                 {

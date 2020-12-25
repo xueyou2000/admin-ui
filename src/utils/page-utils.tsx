@@ -1,6 +1,7 @@
 import { ModalPopupContext } from '@/components/ModalPopup';
 import { findDictDataByTypes } from '@/pages/system/dict/service';
 import { ActionType } from '@ant-design/pro-table';
+import { Select } from 'antd';
 import React, { useState, useContext, useEffect } from 'react';
 import { objectKeyToArray } from './object-utils';
 
@@ -62,4 +63,16 @@ export function dictToValueEnum(dictData: DictData[], all: boolean = true) {
     };
   });
   return valueEnum;
+}
+
+export function renderDictSelect(dictData: DictData[]) {
+  return dictData.map(x => (
+    <Select.Option key={x.dictValue} value={x.dictValue}>
+      {x.dictLabel}
+    </Select.Option>
+  ));
+}
+
+export function dictToPickerData(dictData: DictData[]) {
+  return dictData.map(x => ({ label: x.dictLabel, value: x.dictValue, disabled: x.status !== 'TRUE' }));
 }

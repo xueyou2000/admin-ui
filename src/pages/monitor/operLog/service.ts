@@ -12,7 +12,7 @@ export function queryOperLogByPage(data?: Partial<OperLog> & TableQueryParams) {
   }
 
   return request
-    .post<IResponse<IPage<OperLog>>>(`/api/monitor/operLog/findByPage/${pageSize}/${current}`, {
+    .post<IResponse<IPage<OperLog>>>(`/monitor/operLog/findByPage/${pageSize}/${current}`, {
       data: queryData,
     })
     .then(res => res.res);
@@ -22,14 +22,14 @@ export function queryOperLogByPage(data?: Partial<OperLog> & TableQueryParams) {
  * 删除操作日志
  */
 export function removeOperLog(ids: number[]) {
-  return request.post<IResponse>(`/api/monitor/operLog/remove`, { params: { ids } });
+  return request.post<IResponse>(`/monitor/operLog/remove`, { params: { ids } });
 }
 
 /**
  * 清空操作日志
  */
 export function cleanOperLog() {
-  return request.post<IResponse>(`/api/monitor/operLog/clean`);
+  return request.post<IResponse>(`/monitor/operLog/clean`);
 }
 
 /**
@@ -44,7 +44,7 @@ export function exportOperLog(data?: Partial<OperLog> & TableQueryParams) {
   }
 
   return request
-    .post<IResponse<string>>(`/api/monitor/operLog/export`, {
+    .post<IResponse<string>>(`/monitor/operLog/export`, {
       data: queryData,
     })
     .then(res => res.res);

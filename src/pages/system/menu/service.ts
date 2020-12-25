@@ -14,7 +14,7 @@ export function querySystemMenuList(data?: Partial<SystemMenu> & TableQueryParam
   }
 
   return request
-    .post<IResponse<IPage<SystemMenu>>>(`/api/system/menu/findByPage/999/1`, { data: queryData })
+    .post<IResponse<IPage<SystemMenu>>>(`/system/menu/findByPage/999/1`, { data: queryData })
     .then(res => res.res);
 }
 
@@ -22,19 +22,19 @@ export function querySystemMenuList(data?: Partial<SystemMenu> & TableQueryParam
  * 新增系统菜单
  */
 export function addSystemMenu(data: SystemMenu) {
-  return request.post<IResponse>(`/api/system/menu/add`, { data });
+  return request.post<IResponse>(`/system/menu/add`, { data });
 }
 
 /**
  * 修改系统菜单
  */
 export function updateSystemMenu(data: SystemMenu) {
-  return request.post<IResponse>(`/api/system/menu/update`, { data });
+  return request.post<IResponse>(`/system/menu/update`, { data });
 }
 
 /**
  * 删除系统菜单
  */
 export function removeSystemMenu(menuId: number) {
-  return request.post<IResponse>(`/api/system/menu/remove`, { params: { menuId } });
+  return request.post<IResponse>(`/system/menu/remove`, { params: { menuId } });
 }

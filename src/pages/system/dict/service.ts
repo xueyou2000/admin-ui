@@ -6,7 +6,7 @@ import request from '@/utils/request';
  */
 export function queryDictTypeByPage(data?: Partial<DictType> & TableQueryParams) {
   return request
-    .post<IResponse<IPage<DictType>>>(`/api/system/dict/type/findByPage/${data?.pageSize}/${data?.current}`, {
+    .post<IResponse<IPage<DictType>>>(`/system/dict/type/findByPage/${data?.pageSize}/${data?.current}`, {
       data: toQueryBaseDto<DictType, DictTypeQuery>('dictType', data),
     })
     .then(res => res.res);
@@ -16,21 +16,21 @@ export function queryDictTypeByPage(data?: Partial<DictType> & TableQueryParams)
  * 新增字典类型
  */
 export function addDictType(data: DictType) {
-  return request.post<IResponse>(`/api/system/dict/type/add`, { data });
+  return request.post<IResponse>(`/system/dict/type/add`, { data });
 }
 
 /**
  * 修改字典类型
  */
 export function updateDictType(data: DictType) {
-  return request.post<IResponse>(`/api/system/dict/type/update`, { data });
+  return request.post<IResponse>(`/system/dict/type/update`, { data });
 }
 
 /**
  * 删除字典类型
  */
 export function removeDictType(ids: number[]) {
-  return request.post<IResponse>(`/api/system/dict/type/remove`, { params: { ids } });
+  return request.post<IResponse>(`/system/dict/type/remove`, { params: { ids } });
 }
 
 /**
@@ -38,7 +38,7 @@ export function removeDictType(ids: number[]) {
  */
 export function queryDictDataByPage(data?: Partial<DictData> & TableQueryParams) {
   return request
-    .post<IResponse<IPage<DictData>>>(`/api/system/dict/data/findByPage/${data?.pageSize}/${data?.current}`, {
+    .post<IResponse<IPage<DictData>>>(`/system/dict/data/findByPage/${data?.pageSize}/${data?.current}`, {
       data: toQueryBaseDto<DictData, DictDataQuery>('dictData', data),
     })
     .then(res => res.res);
@@ -49,7 +49,7 @@ export function queryDictDataByPage(data?: Partial<DictData> & TableQueryParams)
  */
 export function queryDictDataByType(dictType: string) {
   return request
-    .post<IResponse<DictData[]>>(`/api/system/dict/data/type`, { params: { dictType } })
+    .post<IResponse<DictData[]>>(`/system/dict/data/type`, { params: { dictType } })
     .then(res => res.res);
 }
 
@@ -58,7 +58,7 @@ export function queryDictDataByType(dictType: string) {
  */
 export function getDictLabel(dictType: string, dictValue: string) {
   return request
-    .post<IResponse<string>>(`/api/system/dict/data/label`, { params: { dictType, dictValue } })
+    .post<IResponse<string>>(`/system/dict/data/label`, { params: { dictType, dictValue } })
     .then(res => res.res);
 }
 
@@ -66,21 +66,21 @@ export function getDictLabel(dictType: string, dictValue: string) {
  * 新增字典数据
  */
 export function addDictData(data: DictType) {
-  return request.post<IResponse>(`/api/system/dict/data/add`, { data });
+  return request.post<IResponse>(`/system/dict/data/add`, { data });
 }
 
 /**
  * 修改字典数据
  */
 export function updateDictData(data: DictType) {
-  return request.post<IResponse>(`/api/system/dict/data/update`, { data });
+  return request.post<IResponse>(`/system/dict/data/update`, { data });
 }
 
 /**
  * 删除字典数据
  */
 export function removeDictData(ids: number[]) {
-  return request.post<IResponse>(`/api/system/dict/data/remove`, { params: { ids } });
+  return request.post<IResponse>(`/system/dict/data/remove`, { params: { ids } });
 }
 
 /**
@@ -88,6 +88,6 @@ export function removeDictData(ids: number[]) {
  */
 export function findDictDataByTypes(types: string[]) {
   return request
-    .post<IResponse>(`/api/system/dict/data/findByTypes`, { params: { types } })
+    .post<IResponse>(`/system/dict/data/findByTypes`, { params: { types } })
     .then(res => res.res);
 }

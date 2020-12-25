@@ -5,14 +5,17 @@ import { ErrorShowType } from 'umi';
  * 获取验证码
  */
 export function getCaptcha() {
-  return request.post<VerifyResponse<CaptchaInfo>>('/captcha/get', { data: { captchaType: 'blockPuzzle' } });
+  return request.post<VerifyResponse<CaptchaInfo>>('/captcha/get', {
+    data: { captchaType: 'blockPuzzle' },
+    directlyUrl: true,
+  });
 }
 
 /**
  * 校验验证码
  */
 export function checkCaptcha(params: CheckCaptchaParams) {
-  return request.post<VerifyResponse<{ result: boolean }>>('/captcha/check', { data: params });
+  return request.post<VerifyResponse<{ result: boolean }>>('/captcha/check', { data: params, directlyUrl: true });
 }
 
 /**
@@ -20,7 +23,7 @@ export function checkCaptcha(params: CheckCaptchaParams) {
  */
 export function loginByCaptcha(params: LoginParams) {
   return request
-    .post<IResponse<LoginRes>>('/api/auth/login/captcha', { data: params, showType: ErrorShowType.SILENT })
+    .post<IResponse<LoginRes>>('/auth/login/captcha', { data: params, showType: ErrorShowType.SILENT })
     .then(res => res.res);
 }
 
@@ -30,7 +33,7 @@ export function loginByCaptcha(params: LoginParams) {
  * @param mobile 手机号
  */
 export function getMobileCaptcha(mobile: string) {
-  return request.post<IResponse>(`/api/auth/mobile-captch?mobile=${mobile}`);
+  return request.post<IResponse>(`/auth/mobile-captch?mobile=${mobile}`);
 }
 
 /**
@@ -38,7 +41,7 @@ export function getMobileCaptcha(mobile: string) {
  */
 export function loginByMobile(params: MobileLoginParams) {
   return request
-    .post<IResponse<LoginRes>>('/api/auth/login/mobile', { data: params, showType: ErrorShowType.SILENT })
+    .post<IResponse<LoginRes>>('/auth/login/mobile', { data: params, showType: ErrorShowType.SILENT })
     .then(res => res.res);
 }
 
@@ -46,5 +49,5 @@ export function loginByMobile(params: MobileLoginParams) {
  * 注销登陆
  */
 export function logout() {
-  return request.post<IResponse>('/api/auth/logout');
+  return request.post<IResponse>('/auth/logout');
 }

@@ -2,6 +2,7 @@
  * request 网络请求工具
  * 详细文档 @see https://github.com/umijs/umi-request
  */
+import { HTTP_BASE_URL } from '@/config/app-config';
 import { message, Modal, notification } from 'antd';
 import { history, getIntl, getLocale } from 'umi';
 import { extend, ResponseError } from 'umi-request';
@@ -95,15 +96,16 @@ const request = extend({
 });
 
 /**
- * 请求附加授权token拦截器
+ * 请求附加授权token拦截器, 设置baseurl
  */
 request.interceptors.request.use((url, options) => {
+  const finallyUrl = HTTP_BASE_URL ? `${HTTP_BASE_URL.replace(/\/$/, '')}/${url.replace(/^\//, '')}` : url;
   const authority = getAuthority();
   if (authority) {
     options.headers = Object.assign({}, options.headers, { token: authority.token });
   }
   return {
-    url,
+    url: options.directlyUrl ? url : finallyUrl,
     options,
   };
 });

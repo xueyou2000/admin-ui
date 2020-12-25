@@ -32,6 +32,8 @@ interface Window {
  */
 declare interface RequestInit {
   showType?: number;
+  /** 是否直接使用url,而不累加baseurl */
+  directlyUrl?: boolean;
 }
 
 declare module 'roadhog-api-doc' {

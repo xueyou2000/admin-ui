@@ -5,7 +5,7 @@ import request from '@/utils/request';
  */
 export function queryOnlineUserList(params: UserOnlineQueryParams) {
   return request
-    .post<IResponse<UserOnline[]>>(`/api/monitor/online/list`, { params })
+    .post<IResponse<UserOnline[]>>(`/monitor/online/list`, { params })
     .then(res => res.res);
 }
 
@@ -13,5 +13,5 @@ export function queryOnlineUserList(params: UserOnlineQueryParams) {
  * 强退用户
  */
 export function forceLogout(tokenId: string) {
-  return request.post<IResponse>(`/api/monitor/online/forceLogout`, { params: { tokenId } });
+  return request.post<IResponse>(`/monitor/online/forceLogout`, { params: { tokenId } });
 }
