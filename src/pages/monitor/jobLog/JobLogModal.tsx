@@ -88,7 +88,7 @@ export default function JobLogModal({ jobId }: { jobId: number }) {
         pagination={{ pageSize: 10 }}
         actionRef={actionRef}
         request={params =>
-          queryJobLogByPage({ ...params, jobId }).then(page => {
+          queryJobLogByPage({ ...params, jobId, sortNames: ['create_time'] }).then(page => {
             return { success: true, data: page.records, total: page.total };
           })
         }

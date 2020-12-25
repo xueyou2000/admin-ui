@@ -166,6 +166,11 @@ export default defineConfig({
                   wrappers: ['@/components/KeepAliveWapper'],
                 },
                 {
+                  path: '/system/config',
+                  component: './system/config',
+                  wrappers: ['@/components/KeepAliveWapper'],
+                },
+                {
                   component: './error/404',
                 },
               ],
