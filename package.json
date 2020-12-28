@@ -45,6 +45,7 @@
     "umi-plugin-keep-alive": "^0.0.1-beta.16",
     "use-merge-value": "^1.0.2",
     "xy-css-transition": "^0.1.0",
+    "xy-upload": "^0.3.1",
     "yorkie": "^2.0.0"
   },
   "devDependencies": {

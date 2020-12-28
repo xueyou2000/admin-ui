@@ -76,3 +76,7 @@ export function renderDictSelect(dictData: DictData[]) {
 export function dictToPickerData(dictData: DictData[]) {
   return dictData.map(x => ({ label: x.dictLabel, value: x.dictValue, disabled: x.status !== 'TRUE' }));
 }
+
+export function isBadResponse(response?: IResponse) {
+  return response ? response.status !== 0 : true;
+}

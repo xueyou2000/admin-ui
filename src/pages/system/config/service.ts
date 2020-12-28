@@ -35,3 +35,10 @@ export function addConfig(config: Config) {
 export function updateConfig(config: Config) {
   return request.post<IResponse>(`/system/config/update`, { data: config });
 }
+
+/**
+ * 获取系统配置
+ */
+export function findConfigByKey(key: string) {
+  return request.post<IResponse<string>>(`/system/config/findConfigByKey`, { params: { key } });
+}

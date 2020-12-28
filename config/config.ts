@@ -171,6 +171,11 @@ export default defineConfig({
                   wrappers: ['@/components/KeepAliveWapper'],
                 },
                 {
+                  path: '/system/oss',
+                  component: './system/oss',
+                  wrappers: ['@/components/KeepAliveWapper'],
+                },
+                {
                   component: './error/404',
                 },
               ],

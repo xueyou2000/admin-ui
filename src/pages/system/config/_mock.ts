@@ -38,6 +38,10 @@ export default delay(
     'POST /api/system/config/update': {
       status: 0,
     },
+    'POST /api/system/config/findConfigByKey': {
+      status: 0,
+      data: '',
+    },
   },
   600,
 );
