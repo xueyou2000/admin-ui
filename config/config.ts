@@ -160,6 +160,11 @@ export default defineConfig({
                   wrappers: ['@/components/KeepAliveWapper'],
                 },
                 {
+                  path: '/system/dept',
+                  component: './system/dept',
+                  wrappers: ['@/components/KeepAliveWapper'],
+                },
+                {
                   path: '/system/dict',
                   name: 'dict',
                   component: './system/dict',
