@@ -1,5 +1,4 @@
 import request from '@/utils/request';
-import { toQueryBaseDto } from '@/utils/object-utils';
 
 /**
  * 查询部门
@@ -31,4 +30,18 @@ export function addDept(dept: Dept) {
  */
 export function updateDept(dept: Dept) {
   return request.post<IResponse>(`/system/dept/update`, { data: dept });
+}
+
+/**
+ * 获取选择部门(数据权限) 用于选择
+ */
+export function getDeptIdsByRole(roleId: number) {
+  return request.post<IResponse<number[]>>(`/system/dept/role/${roleId}`).then(res => res.res);
+}
+
+/**
+ * 获取所有部门
+ */
+export function queryDeptAll() {
+  return request.post<IResponse<Dept[]>>(`/system/dept/all`).then(res => res.res);
 }

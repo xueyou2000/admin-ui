@@ -3,7 +3,7 @@ import { delay } from 'roadhog-api-doc';
 
 export default delay(
   {
-    'POST /api/system/dept/findByPage/:pageSize/:current': (req: Request, res: Response) => {
+    'POST /api/system/role/findByPage/:pageSize/:current': (req: Request, res: Response) => {
       var pageNum = parseInt(req.params.current);
       var pageSize = parseInt(req.params.pageSize);
 
@@ -16,22 +16,17 @@ export default delay(
         },
       });
     },
-    'POST /api/system/dept/add': {
+    'POST /api/system/role/add': {
       status: 0,
     },
-    'POST /api/system/dept/remove': {
+    'POST /api/system/role/remove': {
       status: 0,
     },
-    'POST /api/system/dept/update': {
+    'POST /api/system/role/update': {
       status: 0,
     },
-    'POST /api/system/dept/role/:roleId': {
+    'POST /api/system/role/authDataScope': {
       status: 0,
-      res: [],
-    },
-    'POST /api/system/dept/all': {
-      status: 0,
-      res: [],
     },
   },
   600,

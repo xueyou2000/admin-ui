@@ -23,6 +23,10 @@ export default delay(
     'POST /api/system/menu/remove': {
       status: 0,
     },
+    'POST /api/system/menu/role/:roleId': {
+      status: 0,
+      res: [],
+    },
   },
   600,
 );

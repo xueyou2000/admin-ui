@@ -27,12 +27,12 @@ export function buildtree(list: SystemMenu[], arr: any[], parentId: number) {
 /**
  * 管理权限树形数据
  */
-export function useSystemPermissions() {
-  const [permissions, setPermissions] = useState([{ key: 0, value: 0, title: '无' }]);
+export function useSystemPermissions(addEmpty = true) {
+  const [permissions, setPermissions] = useState(addEmpty ? [{ key: 0, value: 0, title: '无' }] : []);
 
   useEffect(() => {
     querySystemMenuList({}).then(page => {
-      const treeData = [{ key: 0, value: 0, title: '无' }];
+      const treeData = addEmpty ? [{ key: 0, value: 0, title: '无' }] : [];
       buildtree(page.records, treeData, 0);
       setPermissions(treeData);
     });

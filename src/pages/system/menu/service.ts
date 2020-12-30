@@ -38,3 +38,10 @@ export function updateSystemMenu(data: SystemMenu) {
 export function removeSystemMenu(menuId: number) {
   return request.post<IResponse>(`/system/menu/remove`, { params: { menuId } });
 }
+
+/**
+ * 获取角色所选权限
+ */
+export function getRolePermIds(roleId: number) {
+  return request.post<IResponse<SystemMenu[]>>(`/system/menu/role/${roleId}`).then(res => res.res);
+}
