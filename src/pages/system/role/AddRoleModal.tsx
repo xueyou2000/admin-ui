@@ -2,18 +2,24 @@ import ModalContent from '@/components/ModalPopup/ModalContent';
 import ModalFooter from '@/components/ModalPopup/ModalFooter';
 import { useSubmit } from '@/utils/page-utils';
 import { Button, Divider, Form, Input, InputNumber, message, Select, Tree } from 'antd';
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 import { useSystemPermissions } from '../menu/utils';
 import { addRole } from './service';
 
 export default function AddRoleModal() {
   const { permissions } = useSystemPermissions(false);
+  const halfCheckedKeys = useRef([]);
   const [checkedKeys, setCheckedKeys] = useState<number[]>([]);
   const { loading, submitHandle } = useSubmit<RoleModel>(data =>
-    addRole(Object.assign({}, data, { menuIds: checkedKeys })).then(() => {
+    addRole(Object.assign({}, data, { menuIds: checkedKeys.concat(halfCheckedKeys.current) })).then(() => {
       message.success('新增角色成功');
     }),
   );
+
+  function handleCheck(checkedKeys: any, info: any) {
+    setCheckedKeys(checkedKeys);
+    halfCheckedKeys.current = info.halfCheckedKeys;
+  }
 
   return (
     <Form<RoleModel>
@@ -40,12 +46,7 @@ export default function AddRoleModal() {
         </Form.Item>
         <Divider />
         <Form.Item label="拥有权限">
-          <Tree
-            checkable={true}
-            treeData={permissions}
-            checkedKeys={checkedKeys}
-            onCheck={keys => setCheckedKeys(keys as number[])}
-          />
+          <Tree checkable={true} treeData={permissions} checkedKeys={checkedKeys} onCheck={handleCheck} />
         </Form.Item>
       </ModalContent>
       <ModalFooter>

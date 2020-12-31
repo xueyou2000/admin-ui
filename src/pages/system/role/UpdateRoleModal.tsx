@@ -2,7 +2,7 @@ import ModalContent from '@/components/ModalPopup/ModalContent';
 import ModalFooter from '@/components/ModalPopup/ModalFooter';
 import { useSubmit } from '@/utils/page-utils';
 import { Button, Divider, Form, Input, InputNumber, message, Select, Tree } from 'antd';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { getRolePermIds } from '../menu/service';
 import { useSystemPermissions } from '../menu/utils';
 import { updateRole } from './service';
@@ -10,12 +10,18 @@ import merge from 'lodash/merge';
 
 export default function UpdateRoleModal({ role }: { role: Role }) {
   const { permissions } = useSystemPermissions(false);
+  const halfCheckedKeys = useRef([]);
   const [checkedKeys, setCheckedKeys] = useState<number[]>([]);
   const { loading, submitHandle } = useSubmit<RoleModel>(data =>
-    updateRole(merge({}, role, data, { menuIds: checkedKeys })).then(() => {
+    updateRole(merge({}, role, data, { menuIds: checkedKeys.concat(halfCheckedKeys.current) })).then(() => {
       message.success('修改角色成功');
     }),
   );
+
+  function handleCheck(checkedKeys: any, info: any) {
+    setCheckedKeys(checkedKeys);
+    halfCheckedKeys.current = info.halfCheckedKeys;
+  }
 
   useEffect(() => {
     getRolePermIds(role.roleId).then(res => {
@@ -50,12 +56,7 @@ export default function UpdateRoleModal({ role }: { role: Role }) {
         </Form.Item>
         <Divider />
         <Form.Item label="拥有权限">
-          <Tree
-            checkable={true}
-            treeData={permissions}
-            checkedKeys={checkedKeys}
-            onCheck={keys => setCheckedKeys(keys as number[])}
-          />
+          <Tree checkable={true} treeData={permissions} checkedKeys={checkedKeys} onCheck={handleCheck} />
         </Form.Item>
       </ModalContent>
       <ModalFooter>

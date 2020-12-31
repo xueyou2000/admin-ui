@@ -38,7 +38,7 @@ export function updateUser(user: SystemUser) {
  * 重置密码
  */
 export function restPassword(userId: string, password: string) {
-  return request.post<IResponse>(`/system/user/resetPwd`, { params: { userId, password } });
+  return request.post<IResponse>(`/system/user/resetPwd`, { params: { userId, newPassword: password } });
 }
 
 /**
