@@ -33,6 +33,10 @@ export default delay(
       status: 0,
       res: [],
     },
+    'POST /api/system/dept/findEnableDepts': {
+      status: 0,
+      res: [],
+    },
   },
   600,
 );

@@ -45,3 +45,12 @@ export function getDeptIdsByRole(roleId: number) {
 export function queryDeptAll() {
   return request.post<IResponse<Dept[]>>(`/system/dept/all`).then(res => res.res);
 }
+
+/**
+ * 查询可用部门
+ */
+export function findEnableDepts() {
+  return request
+    .post<IResponse<Dept[]>>(`/system/dept/findEnableDepts`, { data: {} })
+    .then(res => res.res);
+}

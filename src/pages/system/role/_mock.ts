@@ -28,6 +28,10 @@ export default delay(
     'POST /api/system/role/authDataScope': {
       status: 0,
     },
+    'POST /api/system/role/all': {
+      status: 0,
+      res: [],
+    },
   },
   600,
 );

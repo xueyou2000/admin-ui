@@ -40,3 +40,10 @@ export function updateRole(role: RoleModel) {
 export function authDataScopeSave(role: RoleModel) {
   return request.post<IResponse>(`/system/role/authDataScope`, { data: role });
 }
+
+/**
+ * 查询所有角色
+ */
+export function findAllRole() {
+  return request.post<IResponse<Role[]>>(`/system/role/all`).then(res => res.res);
+}

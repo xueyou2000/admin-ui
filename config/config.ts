@@ -116,19 +116,13 @@ export default defineConfig({
             },
             {
               path: '/dashboard/welcome',
-              name: 'welcome',
-              icon: 'dashboard',
               component: './dashboard/welcome',
             },
             {
               path: '/profile',
-              icon: 'profile',
-              name: 'profile',
               routes: [
                 {
                   path: '/profile/settings',
-                  name: 'settings',
-                  icon: 'setting',
                   component: './profile/settings',
                 },
               ],
@@ -140,22 +134,16 @@ export default defineConfig({
               routes: [
                 {
                   path: '/system/user',
-                  name: 'user',
-                  icon: 'user',
-                  component: './dashboard/user',
+                  component: './system/user',
                   wrappers: ['@/components/KeepAliveWapper'],
                 },
                 {
                   path: '/system/role',
-                  name: 'role',
-                  icon: 'safety',
                   component: './system/role',
                   wrappers: ['@/components/KeepAliveWapper'],
                 },
                 {
                   path: '/system/permission',
-                  name: 'permission',
-                  icon: 'menu',
                   component: './system/menu',
                   wrappers: ['@/components/KeepAliveWapper'],
                 },
@@ -166,7 +154,6 @@ export default defineConfig({
                 },
                 {
                   path: '/system/dict',
-                  name: 'dict',
                   component: './system/dict',
                   wrappers: ['@/components/KeepAliveWapper'],
                 },
