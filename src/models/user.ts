@@ -44,9 +44,15 @@ const UserModel: UserModelType = {
         console.log('获取当前登陆用户信息异常:', error);
       }
     },
-    *updateCurrentUser({ payload }, { call, put }) {
+    *updateCurrentUser({ payload }, { call, select, put }) {
       try {
-        yield call(updateCurrentUser, payload);
+        const currentUser: SystemUser = yield select((state: { user: UserModelState }) => state.user.currentUser);
+        const user = Object.assign({}, currentUser, payload);
+        yield call(updateCurrentUser, user);
+        yield put({
+          type: 'saveCurrentUser',
+          payload: user,
+        });
         const intl = getIntl(getLocale());
         message.success(
           intl.formatMessage({ id: 'settings.basic.update.success', defaultMessage: '更新基本信息成功' }),

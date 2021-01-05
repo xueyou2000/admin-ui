@@ -12,8 +12,14 @@ export default function UpdateRoleModal({ role }: { role: Role }) {
   const { permissions } = useSystemPermissions(false);
   const halfCheckedKeys = useRef([]);
   const [checkedKeys, setCheckedKeys] = useState<number[]>([]);
+  const isChange = useRef(false);
+  const defaultKeys = useRef<number[]>([]);
   const { loading, submitHandle } = useSubmit<RoleModel>(data =>
-    updateRole(merge({}, role, data, { menuIds: checkedKeys.concat(halfCheckedKeys.current) })).then(() => {
+    updateRole(
+      merge({}, role, data, {
+        menuIds: isChange.current ? checkedKeys.concat(halfCheckedKeys.current) : defaultKeys.current,
+      }),
+    ).then(() => {
       message.success('修改角色成功');
     }),
   );
@@ -21,10 +27,12 @@ export default function UpdateRoleModal({ role }: { role: Role }) {
   function handleCheck(checkedKeys: any, info: any) {
     setCheckedKeys(checkedKeys);
     halfCheckedKeys.current = info.halfCheckedKeys;
+    isChange.current = true;
   }
 
   useEffect(() => {
     getRolePermIds(role.roleId).then(res => {
+      defaultKeys.current = res.map(m => m.menuId);
       const pidSet = new Set(res.map(m => m.parentId).filter(id => id > 0));
       // 因为antd 树插件勾选父节点会导致所有子节点选中,所以过滤所有父节点
       setCheckedKeys(res.map(m => m.menuId).filter(id => !pidSet.has(id)));
