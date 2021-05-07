@@ -2,7 +2,7 @@ import { RedoOutlined } from '@ant-design/icons';
 import classNames from 'classnames';
 import React, { useEffect, useRef, useState } from 'react';
 import CSSTransition from 'xy-css-transition';
-import { aesEncrypt, getStartX } from '../utils';
+import { aesEncrypt, clamp, getStartX } from '../utils';
 import styles from './index.less';
 
 interface VerifyStyle {
@@ -176,8 +176,7 @@ export default function VerifySlide(props: VerifySlideProps) {
       return;
     }
 
-    let x: number = getStartX(e);
-    startLeftRef.current = Math.floor(x - sliderBar.getBoundingClientRect().left);
+    startLeftRef.current = getStartX(e);
     startTimeRef.current = +new Date();
     if (isEndRef.current === false) {
       isStartRef.current = true;
@@ -198,16 +197,24 @@ export default function VerifySlide(props: VerifySlideProps) {
     }
 
     if (isStartRef.current && isEndRef.current === false) {
-      let x = getStartX(e);
-      let moveBlockLeft = x - sliderBar.getBoundingClientRect().left; // 小方块相对于父元素的left值
+      let offsetX = getStartX(e) - startLeftRef.current;
 
-      if (moveBlockLeft - startLeftRef.current <= 0) {
-        moveBlockLeftRef.current = '0px';
-      } else if (moveBlockLeft >= parseFloat(barSize.width) - parseInt(barSize.height)) {
-        moveBlockLeftRef.current = parseFloat(barSize.width) - parseInt(barSize.height) + 'px';
-      } else {
-        moveBlockLeftRef.current = moveBlockLeft - startLeftRef.current + 'px';
-      }
+      offsetX = clamp(offsetX, 0, parseFloat(barSize.width) - parseFloat(barSize.height));
+
+      // let moveBlockLeft = offsetX;
+
+      console.log(offsetX, sliderBar.offsetLeft);
+      moveBlockLeftRef.current = offsetX + 'px';
+      // console.log(moveBlockLeft, parseFloat(barSize.width) - parseFloat(barSize.height));
+
+      // if (moveBlockLeft - startLeftRef.current <= 0) {
+      //   moveBlockLeftRef.current = '0px';
+      // } else if (moveBlockLeft >= parseFloat(barSize.width) - parseFloat(barSize.height)) {
+      //   moveBlockLeftRef.current = parseFloat(barSize.width) - parseFloat(barSize.height) + 'px';
+      // } else {
+      //   moveBlockLeftRef.current = moveBlockLeft - startLeftRef.current + 'px';
+      // }
+
       setVerifyStyle(style => ({ ...style, moveBlockLeft: moveBlockLeftRef.current }));
     }
   }

@@ -2,7 +2,6 @@ import logo from '@/assets/logo.svg';
 import Authorized from '@/components/Authorized/Authorized';
 import check from '@/components/Authorized/CheckPermissions';
 import RightContent from '@/components/GlobalHeader/RightContent';
-import KeepAliveTabs from '@/components/KeepAliveTabs';
 import icons from '@/config/icons';
 import { GlobalModelState } from '@/models/global';
 import NoAuthorizedPage from '@/pages/error/403';

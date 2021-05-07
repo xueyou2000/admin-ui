@@ -74,9 +74,9 @@ const Model: ModelType = {
         });
       }
     },
-    logout(_, { put }) {
+    *logout(_, { put }) {
       const { redirect } = getPageQuery();
-      logout();
+      yield logout();
       cleanAuthority();
 
       // Note: There may be security issues, please note
