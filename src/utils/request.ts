@@ -129,6 +129,14 @@ request.interceptors.response.use(async (response, options) => {
           id: 'request.system.error',
           defaultMessage: '系统异常',
         });
+      if (data.redirect) {
+        if ((data.redirect + '').indexOf('http') !== -1) {
+          window.location.href = data.redirect;
+        } else {
+          history.push(data.redirect);
+        }
+        return response;
+      }
       if ('status' in data && data.status !== 0) {
         switch (options.showType) {
           case ErrorShowType.SILENT:

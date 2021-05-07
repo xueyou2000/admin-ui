@@ -198,23 +198,8 @@ export default function VerifySlide(props: VerifySlideProps) {
 
     if (isStartRef.current && isEndRef.current === false) {
       let offsetX = getStartX(e) - startLeftRef.current;
-
       offsetX = clamp(offsetX, 0, parseFloat(barSize.width) - parseFloat(barSize.height));
-
-      // let moveBlockLeft = offsetX;
-
-      console.log(offsetX, sliderBar.offsetLeft);
       moveBlockLeftRef.current = offsetX + 'px';
-      // console.log(moveBlockLeft, parseFloat(barSize.width) - parseFloat(barSize.height));
-
-      // if (moveBlockLeft - startLeftRef.current <= 0) {
-      //   moveBlockLeftRef.current = '0px';
-      // } else if (moveBlockLeft >= parseFloat(barSize.width) - parseFloat(barSize.height)) {
-      //   moveBlockLeftRef.current = parseFloat(barSize.width) - parseFloat(barSize.height) + 'px';
-      // } else {
-      //   moveBlockLeftRef.current = moveBlockLeft - startLeftRef.current + 'px';
-      // }
-
       setVerifyStyle(style => ({ ...style, moveBlockLeft: moveBlockLeftRef.current }));
     }
   }
