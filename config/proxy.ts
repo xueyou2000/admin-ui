@@ -20,7 +20,7 @@ export default {
     '/api/': {
       target: 'http://127.0.0.1:8053',
       changeOrigin: true,
-      pathRewrite: { '^': '' },
+      pathRewrite: { '^/api/': '' },
     },
     '/file/': {
       target: 'http://127.0.0.1:8053',

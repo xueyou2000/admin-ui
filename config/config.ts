@@ -5,28 +5,30 @@ const { REACT_APP_ENV, NODE_ENV } = process.env;
 
 export default defineConfig({
   esbuild: {},
-  chainWebpack: function(config, { webpack }) {
-    config.merge({
-      optimization: {
-        minimize: NODE_ENV === 'production',
-        splitChunks: {
-          chunks: 'all',
-          minSize: 30000,
-          minChunks: 3,
-          automaticNameDelimiter: '.',
-          cacheGroups: {
-            vendors: {
-              name: 'vendors',
-              test({ resource }: any) {
-                return /[\\/]node_modules[\\/]/.test(resource);
-              },
-              priority: 10,
-            },
-          },
-        },
-      },
-    });
-  },
+  // chainWebpack: function(config, { webpack }) {
+  //   if (NODE_ENV === 'production') {
+  //     config.merge({
+  //       optimization: {
+  //         minimize: NODE_ENV === 'production',
+  //         splitChunks: {
+  //           chunks: 'all',
+  //           minSize: 30000,
+  //           minChunks: 3,
+  //           automaticNameDelimiter: '.',
+  //           cacheGroups: {
+  //             vendors: {
+  //               name: 'vendors',
+  //               test({ resource }: any) {
+  //                 return /[\\/]node_modules[\\/]/.test(resource);
+  //               },
+  //               priority: 10,
+  //             },
+  //           },
+  //         },
+  //       },
+  //     });
+  //   }
+  // },
   nodeModulesTransform: {
     type: 'none',
     exclude: [],
@@ -38,12 +40,12 @@ export default defineConfig({
   scripts:
     NODE_ENV === 'development'
       ? [
-          'https://gw.alipayobjects.com/os/lib/react/16.13.1/umd/react.development.js',
-          'https://gw.alipayobjects.com/os/lib/react-dom/16.13.1/umd/react-dom.development.js',
+          'https://gw.alipayobjects.com/os/lib/react/17.0.2/umd/react.development.js',
+          'https://gw.alipayobjects.com/os/lib/react-dom/17.0.2/umd/react-dom.development.js',
         ]
       : [
-          'https://gw.alipayobjects.com/os/lib/react/16.13.1/umd/react.production.min.js',
-          'https://gw.alipayobjects.com/os/lib/react-dom/16.13.1/umd/react-dom.production.min.js',
+          'https://gw.alipayobjects.com/os/lib/react/17.0.2/umd/react.production.min.js',
+          'https://gw.alipayobjects.com/os/lib/react-dom/17.0.2/umd/react-dom.production.min.js',
         ],
   targets: {
     chrome: 79,
@@ -66,9 +68,9 @@ export default defineConfig({
     title: true,
     baseNavigator: true,
   },
-  dynamicImport: {
-    loading: '@/components/PageLoading/index',
-  },
+  // dynamicImport: {
+  //   loading: '@/components/PageLoading/index',
+  // },
   ignoreMomentLocale: true,
   // Theme for antd: https://ant.design/docs/react/customize-theme-cn
   theme: {
@@ -104,6 +106,10 @@ export default defineConfig({
               component: './error/404',
             },
           ],
+        },
+        {
+          path: '/error',
+          component: './error/404',
         },
         {
           path: '/',
