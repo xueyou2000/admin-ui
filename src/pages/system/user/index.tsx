@@ -152,6 +152,7 @@ export default function RoleQuery() {
                 showIcon={true}
                 showLine={true}
                 defaultExpandAll={true}
+                autoExpandParent={true}
                 treeData={depts}
                 selectable={true}
                 onSelect={handleDeptSelecte}

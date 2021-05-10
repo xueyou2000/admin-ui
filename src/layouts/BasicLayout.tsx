@@ -102,13 +102,12 @@ function BasicLayout(props: PropsWithChildren<BasicLayoutProps>) {
           return <Link to={menuItemProps.path}>{defaultDom}</Link>;
         }}
         {...props}
-        {...settings}
       >
         <Authorized authority={authorized.authority} noMatch={<NoAuthorizedPage />}>
           {children}
         </Authorized>
       </ProLayout>
-      <SettingDrawer
+      {/* <SettingDrawer
         settings={settings}
         disableUrlParams={true}
         onSettingChange={config =>
@@ -117,7 +116,7 @@ function BasicLayout(props: PropsWithChildren<BasicLayoutProps>) {
             payload: config,
           })
         }
-      />
+      /> */}
     </>
   );
 }
