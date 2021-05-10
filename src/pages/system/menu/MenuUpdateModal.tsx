@@ -45,15 +45,13 @@ export default function MenuUpdayeModal({ menu }: MenuUpdateModalProps) {
           </Select>
         </Form.Item>
         <Form.Item name="menuName" label="权限名称" rules={[{ required: true, message: '请输入权限名称' }]}>
-          <Input placeholder="请输入权限名称" />
+          <Input placeholder="请输入权限名称(国际化key)" />
         </Form.Item>
-        <Form.Item
-          name="menuKey"
-          label="路由唯一键"
-          rules={[{ required: menuType !== 'F', message: '请输入动态菜单唯一键' }]}
-        >
-          <Input placeholder="路由唯一键：如'user'" />
-        </Form.Item>
+        {menuType !== 'F' && (
+          <Form.Item name="menuKey" label="路由唯一键" rules={[{ required: true, message: '请输入动态菜单唯一键' }]}>
+            <Input placeholder="路由唯一键：如'user'" />
+          </Form.Item>
+        )}
         {menuType !== 'M' && (
           <Form.Item name="perms" label="权限标识">
             <Input placeholder="权限标识" />

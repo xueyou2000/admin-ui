@@ -12,18 +12,34 @@ export default {
     //   changeOrigin: true,
     //   pathRewrite: { '^/': '/api/' },
     // },
+    // '/captcha': {
+    //   target: 'http://192.168.1.26:8053',
+    //   changeOrigin: true,
+    //   pathRewrite: { '^': '' },
+    // },
+    // '/api/': {
+    //   target: 'http://192.168.1.26:8053',
+    //   changeOrigin: true,
+    //   pathRewrite: { '^/api/': '' },
+    // },
+    // '/file/': {
+    //   target: 'http://192.168.1.26:8053',
+    //   changeOrigin: true,
+    //   pathRewrite: { '^': '' },
+    // },
+
     '/captcha': {
-      target: 'http://127.0.0.1:8053',
+      target: 'http://192.168.1.138:8053',
       changeOrigin: true,
       pathRewrite: { '^': '' },
     },
     '/api/': {
-      target: 'http://127.0.0.1:8053',
+      target: 'http://192.168.1.138:8053',
       changeOrigin: true,
       pathRewrite: { '^/api/': '' },
     },
     '/file/': {
-      target: 'http://127.0.0.1:8053',
+      target: 'http://192.168.1.138:8053',
       changeOrigin: true,
       pathRewrite: { '^': '' },
     },

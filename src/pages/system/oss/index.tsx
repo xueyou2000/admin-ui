@@ -8,7 +8,7 @@ import { CloudUploadOutlined } from '@ant-design/icons';
 import { PageContainer } from '@ant-design/pro-layout';
 import { ActionType, ProColumns } from '@ant-design/pro-table';
 import { Button, Divider, Image, message, Modal } from 'antd';
-import React, { useEffect, useRef } from 'react';
+import { useEffect, useRef } from 'react';
 import { Upload } from 'xy-upload';
 import CloudStorageConfigModal from './CloudStorageConfigModal';
 import { getCloudStorageConfig, queryOssByPage, removeOss, updateOss } from './service';

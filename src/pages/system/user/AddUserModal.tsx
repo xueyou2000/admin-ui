@@ -31,6 +31,9 @@ export default function AddUserModal({ deptId }: { deptId?: number }) {
         <Form.Item name="loginName" label="用户名" rules={[{ required: true, message: '请输入用户名' }]}>
           <Input placeholder="登陆账号" />
         </Form.Item>
+        <Form.Item name="password" label="密码" rules={[{ required: true, message: '请输入密码' }]}>
+          <Input type="password" placeholder="登陆密码" />
+        </Form.Item>
         <Form.Item name="userName" label="昵称" rules={[{ required: true, message: '请输入昵称' }]}>
           <Input placeholder="起一个名字" />
         </Form.Item>

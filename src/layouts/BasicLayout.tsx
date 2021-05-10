@@ -14,7 +14,7 @@ import ProLayout, {
   Settings,
 } from '@ant-design/pro-layout';
 import { getMatchMenu } from '@umijs/route-utils';
-import React, { PropsWithChildren, useEffect, useMemo, useState } from 'react';
+import { PropsWithChildren, useEffect, useMemo, useState } from 'react';
 import { connect, Dispatch, IRoute, Link, useIntl } from 'umi';
 import styles from './BasecLayout.less';
 
@@ -102,6 +102,7 @@ function BasicLayout(props: PropsWithChildren<BasicLayoutProps>) {
           return <Link to={menuItemProps.path}>{defaultDom}</Link>;
         }}
         {...props}
+        {...settings}
       >
         <Authorized authority={authorized.authority} noMatch={<NoAuthorizedPage />}>
           {children}
@@ -109,6 +110,7 @@ function BasicLayout(props: PropsWithChildren<BasicLayoutProps>) {
       </ProLayout>
       <SettingDrawer
         settings={settings}
+        disableUrlParams={true}
         onSettingChange={config =>
           dispatch({
             type: 'settings/changeSetting',
