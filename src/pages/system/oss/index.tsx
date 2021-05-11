@@ -1,4 +1,5 @@
 import HasPermission from '@/components/Authorized/HasPermission';
+import { hasPerms } from '@/components/Authorized/perms';
 import modalPopup from '@/components/ModalPopup';
 import { SuperTable } from '@/components/SuperTable';
 import { getRequestUrl } from '@/config/app-config';
@@ -9,17 +10,20 @@ import { PageContainer } from '@ant-design/pro-layout';
 import { ActionType, ProColumns } from '@ant-design/pro-table';
 import { Button, Divider, Image, message, Modal } from 'antd';
 import { useEffect, useRef } from 'react';
+import { connect, UserModelState } from 'umi';
 import { Upload } from 'xy-upload';
 import CloudStorageConfigModal from './CloudStorageConfigModal';
 import { getCloudStorageConfig, queryOssByPage, removeOss, updateOss } from './service';
 
-export default function OssQuery() {
+function OssQuery({ currentUser }: { currentUser: SystemUser }) {
   const actionRef = useRef<ActionType>();
   const authority = getAuthority();
   const cloudStorageConfig = useRef<CloudStorageConfig | null>(null);
 
   function fetchConfig() {
-    getCloudStorageConfig().then(c => (cloudStorageConfig.current = c));
+    if (currentUser.admin === 'TRUE' || hasPerms('system.oss.config')) {
+      getCloudStorageConfig().then(c => (cloudStorageConfig.current = c));
+    }
   }
 
   useEffect(fetchConfig, []);
@@ -184,3 +188,7 @@ export default function OssQuery() {
     </PageContainer>
   );
 }
+
+export default connect(({ user }: { user: UserModelState }) => ({
+  currentUser: user.currentUser,
+}))(OssQuery);

@@ -5,4 +5,12 @@ function setPerms(perms: string[]) {
   PERMS = perms || [];
 }
 
-export { PERMS, setPerms };
+function hasPerms(perms: string) {
+  if (Array.isArray(PERMS)) {
+    return PERMS.some(item => perms === item);
+  } else {
+    return perms === PERMS;
+  }
+}
+
+export { PERMS, setPerms, hasPerms };
