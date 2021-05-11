@@ -45,3 +45,10 @@ export function removeSystemMenu(menuId: number) {
 export function getRolePermIds(roleId: number) {
   return request.post<IResponse<SystemMenu[]>>(`/system/menu/role/${roleId}`).then(res => res.res);
 }
+
+/**
+ * 获取当前用户的菜单和权限
+ */
+export function getMenuPermissions() {
+  return request.post<IResponse<SystemMenu[]>>(`/system/menu/permissions`).then(res => res.res);
+}

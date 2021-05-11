@@ -14,7 +14,7 @@ import modalPopup from '@/components/ModalPopup';
 import { autoQuery } from '@/utils/page-utils';
 import { connect, UserModelState } from 'umi';
 
-function RoleQuery({ currentUser }: { currentUser: SystemUser }) {
+function UserQuery({ currentUser }: { currentUser: SystemUser }) {
   const actionRef = useRef<ActionType>();
   const { depts } = useDepts(currentUser);
   const deptIdRef = useRef<number | null>(null);
@@ -186,4 +186,4 @@ function RoleQuery({ currentUser }: { currentUser: SystemUser }) {
 
 export default connect(({ user }: { user: UserModelState }) => ({
   currentUser: user.currentUser,
-}))(RoleQuery);
+}))(UserQuery);

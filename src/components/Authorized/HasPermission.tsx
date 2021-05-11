@@ -10,14 +10,18 @@ function HasPermission({
   authority,
   children,
   currentUser,
+  isAuthority = true,
 }: {
   authority: IPermsType;
+  isAuthority?: boolean;
   children: React.ReactNode;
   currentUser?: SystemUser;
-}) {
-  return currentUser?.admin === 'TRUE' ? children : (checkPermissions(authority, PERMS, children, null) as JSX.Element);
+}): JSX.Element {
+  return currentUser?.admin === 'TRUE'
+    ? children
+    : ((isAuthority ? (checkPermissions(authority, PERMS, children, null) as JSX.Element) : null) as any);
 }
 
 export default connect(({ user }: { user: UserModelState }) => ({
   currentUser: user.currentUser,
-}))(HasPermission);
+}))(HasPermission) as typeof HasPermission;

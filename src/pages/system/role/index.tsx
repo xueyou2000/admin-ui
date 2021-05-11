@@ -11,8 +11,9 @@ import { queryRoleByPage, removeRole } from './service';
 import AddRoleModal from './AddRoleModal';
 import UpdateRoleModal from './UpdateRoleModal';
 import DataScopeModal from './DataScopeModal';
+import { connect, UserModelState } from 'umi';
 
-export default function RoleQuery() {
+function RoleQuery({ currentUser }: { currentUser: SystemUser }) {
   const actionRef = useRef<ActionType>();
 
   function handleAdd() {
@@ -85,17 +86,28 @@ export default function RoleQuery() {
       search: false,
       render: (_, record) => (
         <>
-          <HasPermission authority="system:role:update">
+          {/* 自己当前的角色不允许修改 */}
+          {}
+          <HasPermission
+            authority="system:role:update"
+            isAuthority={currentUser.roleIds.find(roleId => roleId === record.roleId) == null}
+          >
             <a onClick={() => handleUpdate(record)}>编辑</a>
             <Divider type="vertical" />
           </HasPermission>
 
-          <HasPermission authority="system:role:update">
+          <HasPermission
+            authority="system:role:update"
+            isAuthority={currentUser.roleIds.find(roleId => roleId === record.roleId) == null}
+          >
             <a onClick={() => handleDataScope(record)}>数据权限</a>
             <Divider type="vertical" />
           </HasPermission>
 
-          <HasPermission authority="system:role:remove">
+          <HasPermission
+            authority="system:role:remove"
+            isAuthority={currentUser.roleIds.find(roleId => roleId === record.roleId) == null}
+          >
             <a onClick={() => handleRemove([record.roleId])}>删除</a>
           </HasPermission>
         </>
@@ -128,3 +140,7 @@ export default function RoleQuery() {
     </PageContainer>
   );
 }
+
+export default connect(({ user }: { user: UserModelState }) => ({
+  currentUser: user.currentUser,
+}))(RoleQuery);

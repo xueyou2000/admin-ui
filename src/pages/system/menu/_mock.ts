@@ -27,6 +27,10 @@ export default delay(
       status: 0,
       res: [],
     },
+    'POST /api/system/menu/permissions': {
+      status: 0,
+      res: [],
+    },
   },
   600,
 );

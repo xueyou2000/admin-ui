@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { getIntl, getLocale } from 'umi';
-import { querySystemMenuList } from './service';
+import { getMenuPermissions, querySystemMenuList } from './service';
 
 /**
  * 创建树形列表组建需要的数据格式
@@ -31,9 +31,9 @@ export function useSystemPermissions(addEmpty = true) {
   const [permissions, setPermissions] = useState(addEmpty ? [{ key: 0, value: 0, title: '无' }] : []);
 
   useEffect(() => {
-    querySystemMenuList({}).then(page => {
+    getMenuPermissions().then(menus => {
       const treeData = addEmpty ? [{ key: 0, value: 0, title: '无' }] : [];
-      buildtree(page.records, treeData, 0);
+      buildtree(menus, treeData, 0);
       setPermissions(treeData);
     });
   }, []);
