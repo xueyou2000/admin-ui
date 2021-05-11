@@ -11,8 +11,9 @@ import { queryDeptByPage, removeDept } from './service';
 import AddDeptModal from './AddDeptModal';
 import UpdateDeptModal from './UpdateDeptModal';
 import { treeData } from '@/utils/object-utils';
+import { connect, UserModelState } from 'umi';
 
-export default function DeptQuery() {
+function DeptQuery({ currentUser }: { currentUser: SystemUser }) {
   const actionRef = useRef<ActionType>();
 
   function handleAdd(parentId?: number) {
@@ -73,23 +74,36 @@ export default function DeptQuery() {
       width: '180px',
       dataIndex: 'action',
       search: false,
-      render: (_, record) => (
-        <>
-          <HasPermission authority="system:dept:update">
-            <a onClick={() => handleUpdate(record)}>编辑</a>
-            <Divider type="vertical" />
-          </HasPermission>
+      render: (_, record) => {
+        // 不允许操作自己以上级部门的信息
+        const ancestors = (currentUser?.dept.ancestors || '').split(',');
+        return (
+          <>
+            <HasPermission
+              authority="system:dept:update"
+              isAuthority={ancestors.find(id => id == record.deptId + '') == null}
+            >
+              <a onClick={() => handleUpdate(record)}>编辑</a>
+              <Divider type="vertical" />
+            </HasPermission>
 
-          <HasPermission authority="system:dept:add">
-            <a onClick={() => handleAdd(record.deptId)}>新增</a>
-            <Divider type="vertical" />
-          </HasPermission>
+            <HasPermission
+              authority="system:dept:add"
+              isAuthority={ancestors.find(id => id == record.deptId + '') == null}
+            >
+              <a onClick={() => handleAdd(record.deptId)}>新增</a>
+              <Divider type="vertical" />
+            </HasPermission>
 
-          <HasPermission authority="system:dept:remove">
-            <a onClick={() => handleRemove([record.deptId])}>删除</a>
-          </HasPermission>
-        </>
-      ),
+            <HasPermission
+              authority="system:dept:remove"
+              isAuthority={ancestors.find(id => id == record.deptId + '') == null}
+            >
+              <a onClick={() => handleRemove([record.deptId])}>删除</a>
+            </HasPermission>
+          </>
+        );
+      },
     },
   ];
 
@@ -119,3 +133,7 @@ export default function DeptQuery() {
     </PageContainer>
   );
 }
+
+export default connect(({ user }: { user: UserModelState }) => ({
+  currentUser: user.currentUser,
+}))(DeptQuery);
