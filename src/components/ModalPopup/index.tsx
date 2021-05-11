@@ -2,7 +2,7 @@ import { ConfigProvider, Modal } from 'antd';
 import { ModalProps } from 'antd/lib/modal';
 import React, { useRef } from 'react';
 import ReactDOM from 'react-dom';
-import { getIntl, getLocale, localeInfo, RawIntlProvider } from 'umi';
+import { connect, getIntl, getLocale, localeInfo, RawIntlProvider } from 'umi';
 import useMergeValue from 'use-merge-value';
 
 export interface ModalPopupContextState {
@@ -57,7 +57,7 @@ function ModalPopup(
   );
 }
 
-// const ModalPopupConnect = connect()(ModalPopup);
+// const ModalPopupConnect = connect()(ModalPopup) as typeof ModalPopup;
 
 export default function modalPopup(
   content: React.ReactChild,

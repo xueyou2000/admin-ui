@@ -7,8 +7,8 @@ import { findAllRole } from '../role/service';
 import { addUser } from './service';
 import { useDepts } from './utils';
 
-export default function AddUserModal({ deptId }: { deptId?: number }) {
-  const { depts } = useDepts();
+export default function AddUserModal({ deptId, currentUser }: { deptId?: number; currentUser: SystemUser }) {
+  const { depts } = useDepts(currentUser);
   const { loading, submitHandle } = useSubmit<SystemUser>(data =>
     addUser(data).then(() => {
       message.success('新增用户成功');

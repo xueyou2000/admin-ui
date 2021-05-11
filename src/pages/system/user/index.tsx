@@ -12,22 +12,27 @@ import UpdateUserModal from './UpdateUserModal';
 import RestPwdModal from './RestPwdModal';
 import modalPopup from '@/components/ModalPopup';
 import { autoQuery } from '@/utils/page-utils';
+import { connect, UserModelState } from 'umi';
 
-export default function RoleQuery() {
+function RoleQuery({ currentUser }: { currentUser: SystemUser }) {
   const actionRef = useRef<ActionType>();
-  const { depts } = useDepts();
+  const { depts } = useDepts(currentUser);
   const deptIdRef = useRef<number | null>(null);
 
   function handleAdd() {
     modalPopup(
-      <AddUserModal deptId={deptIdRef.current === null ? undefined : deptIdRef.current} />,
+      <AddUserModal currentUser={currentUser} deptId={deptIdRef.current === null ? undefined : deptIdRef.current} />,
       { title: '新增用户' },
       autoQuery(actionRef),
     );
   }
 
   function handleUpdate(record: SystemUser) {
-    modalPopup(<UpdateUserModal user={record} />, { title: '修改用户' }, autoQuery(actionRef));
+    modalPopup(
+      <UpdateUserModal currentUser={currentUser} user={record} />,
+      { title: '修改用户' },
+      autoQuery(actionRef),
+    );
   }
 
   function handleRestPwd(record: SystemUser) {
@@ -178,3 +183,7 @@ export default function RoleQuery() {
     </PageContainer>
   );
 }
+
+export default connect(({ user }: { user: UserModelState }) => ({
+  currentUser: user.currentUser,
+}))(RoleQuery);

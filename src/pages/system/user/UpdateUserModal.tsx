@@ -8,9 +8,9 @@ import { updateUser, selectUserById } from './service';
 import { useDepts } from './utils';
 import merge from 'lodash/merge';
 
-export default function UpdateUserModal({ user }: { user: SystemUser }) {
+export default function UpdateUserModal({ user, currentUser }: { user: SystemUser; currentUser: SystemUser }) {
   const [form] = Form.useForm();
-  const { depts } = useDepts();
+  const { depts } = useDepts(currentUser);
   const { loading, submitHandle } = useSubmit<SystemUser>(data =>
     updateUser(merge({}, user, data)).then(() => {
       message.success('修改用户成功');
