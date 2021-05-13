@@ -4,6 +4,7 @@
     "start": "cross-env REACT_APP_ENV=dev umi dev",
     "start:dev": "cross-env REACT_APP_ENV=dev MOCK=none umi dev",
     "build": "umi build",
+    "upload": "scp -i $RSA_FILE -r ./dist/*  root@192.168.1.26:/home/servers/xueyou-admin/website",
     "analyze": "cross-env ANALYZE=1 umi build",
     "postinstall": "umi generate tmp",
     "prettier": "prettier --write '**/*.{js,jsx,tsx,ts,less,md,json}'",

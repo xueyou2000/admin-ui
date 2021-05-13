@@ -51,7 +51,9 @@ function errorHandler(error: ResponseError<IResponse>) {
             }),
             onOk: () => {
               stopAuthprityError = false;
-              history.replace('/user/login?status=authorized_timeout', { username: authority.username });
+              history.replace(`/user/login?status=authorized_timeout&redirect=${history.location.pathname}`, {
+                username: authority.username,
+              });
               return Promise.resolve();
             },
           });

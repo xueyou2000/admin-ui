@@ -8,11 +8,6 @@
 export default {
   dev: {
     // '/captcha': {
-    //   target: 'http://antdv.totinlink.com',
-    //   changeOrigin: true,
-    //   pathRewrite: { '^/': '/api/' },
-    // },
-    // '/captcha': {
     //   target: 'http://192.168.1.26:8053',
     //   changeOrigin: true,
     //   pathRewrite: { '^': '' },
