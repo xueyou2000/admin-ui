@@ -1,3 +1,5 @@
+import { setDayliEnd, setDayliStart } from './date-utils';
+
 /**
  * 构造树型结构数据
  * @param {*} source 数据源
@@ -31,6 +33,7 @@ export function treeData<T>(
 export function toQueryBaseDto<T, Query extends QueryBase>(
   entityName: string,
   tableQuery?: Partial<T> & TableQueryParams,
+  dateRange?: string[],
 ): Query {
   if (!tableQuery) {
     return {} as any;
@@ -47,7 +50,15 @@ export function toQueryBaseDto<T, Query extends QueryBase>(
     for (let name in dateRanges) {
       const val = dateRanges[name];
       if (val) {
-        result.dateRanges?.push({ columnsField: name, startDate: val[0], endDate: val[1] });
+        if (dateRange?.indexOf(name) !== -1) {
+          result.dateRanges?.push({
+            columnsField: name,
+            startDate: setDayliStart(val[0] as any),
+            endDate: setDayliEnd(val[1] as any),
+          });
+        } else {
+          result.dateRanges?.push({ columnsField: name, startDate: val[0] as any, endDate: val[1] as any });
+        }
       }
     }
     delete tableQuery.dateRanges;

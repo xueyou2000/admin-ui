@@ -26,12 +26,12 @@ export function buildtree(list: Dept[], arr: any[], parentId: number) {
 /**
  * 系统部门树形数据
  */
-export function useSystemDepts() {
-  const [depts, setDepts] = useState([{ key: 0, value: 0, title: '无' }]);
+export function useSystemDepts(emptyLabel = '无') {
+  const [depts, setDepts] = useState([{ key: 0, value: 0, title: emptyLabel }]);
 
   useEffect(() => {
     queryDeptByPage({}).then(page => {
-      const treeData = [{ key: 0, value: 0, title: '无' }];
+      const treeData = [{ key: 0, value: 0, title: emptyLabel }];
       buildtree(page.records, treeData, 0);
       setDepts(treeData);
     });

@@ -11,29 +11,42 @@ import { queryRoleByPage, removeRole } from './service';
 import AddRoleModal from './AddRoleModal';
 import UpdateRoleModal from './UpdateRoleModal';
 import DataScopeModal from './DataScopeModal';
-import { connect, UserModelState } from 'umi';
+import { connect, FormattedMessage, useIntl, UserModelState } from 'umi';
 
 function RoleQuery({ currentUser }: { currentUser: SystemUser }) {
   const actionRef = useRef<ActionType>();
+  const intl = useIntl();
 
   function handleAdd() {
-    modalPopup(<AddRoleModal />, { title: '新增角色' }, autoQuery(actionRef));
+    modalPopup(
+      <AddRoleModal />,
+      { title: intl.formatMessage({ id: 'RolePage.addRole', defaultMessage: '新增角色' }) },
+      autoQuery(actionRef),
+    );
   }
 
   function handleUpdate(record: Role) {
-    modalPopup(<UpdateRoleModal role={record} />, { title: '修改角色' }, autoQuery(actionRef));
+    modalPopup(
+      <UpdateRoleModal role={record} />,
+      { title: intl.formatMessage({ id: 'RolePage.updateRole', defaultMessage: '修改角色' }) },
+      autoQuery(actionRef),
+    );
   }
 
   function handleDataScope(record: Role) {
-    modalPopup(<DataScopeModal role={record} />, { title: '数据权限' }, autoQuery(actionRef));
+    modalPopup(
+      <DataScopeModal role={record} />,
+      { title: intl.formatMessage({ id: 'RolePage.dataScope', defaultMessage: '数据权限' }) },
+      autoQuery(actionRef),
+    );
   }
 
   function handleRemove(ids: number[]) {
     Modal.confirm({
-      title: '是否删除所选角色?',
+      title: intl.formatMessage({ id: 'RolePage.removeTips', defaultMessage: '是否删除所选角色?' }),
       onOk: () =>
         removeRole(ids).then(() => {
-          message.success('删除成功!');
+          message.success(intl.formatMessage({ id: 'RolePage.removeOk', defaultMessage: '删除成功!' }));
           if (actionRef.current?.clearSelected) {
             actionRef.current?.clearSelected();
           }
@@ -44,55 +57,68 @@ function RoleQuery({ currentUser }: { currentUser: SystemUser }) {
 
   const columns: ProColumns<Role>[] = [
     {
-      title: '角色Id',
+      title: intl.formatMessage({ id: 'Role.roleId', defaultMessage: '角色Id' }),
       dataIndex: 'roleId',
       search: false,
     },
     {
-      title: '角色名称',
+      title: intl.formatMessage({ id: 'Role.roleName', defaultMessage: '角色名称' }),
       dataIndex: 'roleName',
     },
     {
-      title: '权限字符串',
+      title: intl.formatMessage({ id: 'Role.roleKey', defaultMessage: '权限字符串' }),
       dataIndex: 'roleKey',
     },
     {
-      title: '显示顺序',
+      title: intl.formatMessage({ id: 'Role.roleSort', defaultMessage: '显示顺序' }),
       dataIndex: 'roleSort',
     },
     {
-      title: '数据范围',
+      title: intl.formatMessage({ id: 'Role.dataScope', defaultMessage: '数据范围' }),
       dataIndex: 'dataScope',
       valueEnum: {
-        '1': { text: '全部数据权限', status: 'Success' },
-        '2': { text: '自定数据权限', status: 'Success' },
-        '3': { text: '部门数据权限', status: 'Success' },
-        '4': { text: '部门及以下数据权限', status: 'Success' },
-        '5': { text: '仅本人数据权限', status: 'Success' },
+        '1': { text: intl.formatMessage({ id: 'sys_data_scope.all', defaultMessage: '数据范围' }), status: 'Success' },
+        '2': {
+          text: intl.formatMessage({ id: 'sys_data_scope.custom', defaultMessage: '自定义数据权限' }),
+          status: 'Success',
+        },
+        '3': {
+          text: intl.formatMessage({ id: 'sys_data_scope.dept', defaultMessage: '部门数据权限' }),
+          status: 'Success',
+        },
+        '4': {
+          text: intl.formatMessage({ id: 'sys_data_scope.deptChild', defaultMessage: '部门及以下数据权限' }),
+          status: 'Success',
+        },
+        '5': {
+          text: intl.formatMessage({ id: 'sys_data_scope.self', defaultMessage: '仅本人数据权限' }),
+          status: 'Success',
+        },
       },
     },
     {
-      title: '角色状态',
+      title: intl.formatMessage({ id: 'Role.status', defaultMessage: '角色状态' }),
       dataIndex: 'status',
       valueEnum: {
-        '0': { text: '正常', status: 'Success' },
-        '1': { text: '禁用', status: 'Error' },
+        '0': { text: intl.formatMessage({ id: 'sys_oper_status.normal', defaultMessage: '正常' }), status: 'Success' },
+        '1': { text: intl.formatMessage({ id: 'sys_oper_status.disabled', defaultMessage: '禁用' }), status: 'Error' },
       },
     },
     {
-      title: '操作',
+      title: intl.formatMessage({ id: 'common.oper', defaultMessage: '操作' }),
       width: '180px',
       dataIndex: 'action',
       search: false,
       render: (_, record) => (
         <>
           {/* 自己当前的角色不允许修改 */}
-          {}
           <HasPermission
             authority="system:role:update"
             isAuthority={currentUser.roleIds.find(roleId => roleId === record.roleId) == null}
           >
-            <a onClick={() => handleUpdate(record)}>编辑</a>
+            <a onClick={() => handleUpdate(record)}>
+              <FormattedMessage id="common.edit" defaultMessage="编辑" />
+            </a>
             <Divider type="vertical" />
           </HasPermission>
 
@@ -100,7 +126,9 @@ function RoleQuery({ currentUser }: { currentUser: SystemUser }) {
             authority="system:role:update"
             isAuthority={currentUser.roleIds.find(roleId => roleId === record.roleId) == null}
           >
-            <a onClick={() => handleDataScope(record)}>数据权限</a>
+            <a onClick={() => handleDataScope(record)}>
+              <FormattedMessage id="RolePage.dataScope" defaultMessage="数据权限" />
+            </a>
             <Divider type="vertical" />
           </HasPermission>
 
@@ -108,7 +136,9 @@ function RoleQuery({ currentUser }: { currentUser: SystemUser }) {
             authority="system:role:remove"
             isAuthority={currentUser.roleIds.find(roleId => roleId === record.roleId) == null}
           >
-            <a onClick={() => handleRemove([record.roleId])}>删除</a>
+            <a onClick={() => handleRemove([record.roleId])}>
+              <FormattedMessage id="common.delete" defaultMessage="删除" />
+            </a>
           </HasPermission>
         </>
       ),
@@ -118,7 +148,7 @@ function RoleQuery({ currentUser }: { currentUser: SystemUser }) {
   return (
     <PageContainer>
       <SuperTable<Role>
-        headerTitle="角色"
+        headerTitle={<FormattedMessage id="RolePage.title" defaultMessage="角色管理" />}
         rowKey="roleId"
         columns={columns}
         pagination={{ pageSize: 10 }}
@@ -132,7 +162,7 @@ function RoleQuery({ currentUser }: { currentUser: SystemUser }) {
         toolBarRender={() => [
           <HasPermission key="add" authority="system:role:add">
             <Button type="primary" onClick={handleAdd}>
-              <PlusOutlined /> 新建
+              <PlusOutlined /> <FormattedMessage id="common.add" defaultMessage="新建" />
             </Button>
           </HasPermission>,
         ]}

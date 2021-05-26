@@ -46,6 +46,8 @@ interface DictData {
   remark: string;
   /** 创建时间 */
   createTime: string;
+  /** 字典国际化标签 */
+  langLabel: string;
 }
 
 interface DictDataQuery extends QueryBase {

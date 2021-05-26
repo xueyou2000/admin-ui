@@ -84,11 +84,13 @@ function BasicLayout(props: PropsWithChildren<BasicLayoutProps>) {
   return (
     <>
       <ProLayout
+        {...settings}
         className={styles.layout}
         logo={logo}
         loading={loading}
         menu={{
           loading,
+          locale: true,
         }}
         formatMessage={formatMessage}
         onCollapse={handleMenuCollapse}
@@ -107,7 +109,7 @@ function BasicLayout(props: PropsWithChildren<BasicLayoutProps>) {
           {children}
         </Authorized>
       </ProLayout>
-      {/* <SettingDrawer
+      <SettingDrawer
         settings={settings}
         disableUrlParams={true}
         onSettingChange={config =>
@@ -116,7 +118,7 @@ function BasicLayout(props: PropsWithChildren<BasicLayoutProps>) {
             payload: config,
           })
         }
-      /> */}
+      />
     </>
   );
 }

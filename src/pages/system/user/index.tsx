@@ -12,17 +12,18 @@ import UpdateUserModal from './UpdateUserModal';
 import RestPwdModal from './RestPwdModal';
 import modalPopup from '@/components/ModalPopup';
 import { autoQuery } from '@/utils/page-utils';
-import { connect, UserModelState } from 'umi';
+import { connect, FormattedMessage, RawIntlProvider, useIntl, UserModelState } from 'umi';
 
 function UserQuery({ currentUser }: { currentUser: SystemUser }) {
   const actionRef = useRef<ActionType>();
-  const { depts } = useDepts(currentUser);
+  const { depts, deptsFlat } = useDepts(currentUser);
   const deptIdRef = useRef<number | null>(null);
+  const intl = useIntl();
 
   function handleAdd() {
     modalPopup(
       <AddUserModal currentUser={currentUser} deptId={deptIdRef.current === null ? undefined : deptIdRef.current} />,
-      { title: '新增用户' },
+      { title: intl.formatMessage({ id: 'UserPage.addUser', defaultMessage: '新增用户' }) },
       autoQuery(actionRef),
     );
   }
@@ -30,21 +31,25 @@ function UserQuery({ currentUser }: { currentUser: SystemUser }) {
   function handleUpdate(record: SystemUser) {
     modalPopup(
       <UpdateUserModal currentUser={currentUser} user={record} />,
-      { title: '修改用户' },
+      { title: intl.formatMessage({ id: 'UserPage.updateUser', defaultMessage: '修改用户' }) },
       autoQuery(actionRef),
     );
   }
 
   function handleRestPwd(record: SystemUser) {
-    modalPopup(<RestPwdModal user={record} />, { title: '重置密码', width: 400 }, autoQuery(actionRef));
+    modalPopup(
+      <RestPwdModal user={record} />,
+      { title: intl.formatMessage({ id: 'UserPage.restPwd', defaultMessage: '重置密码' }), width: 400 },
+      autoQuery(actionRef),
+    );
   }
 
   function handleRemove(ids: string[]) {
     Modal.confirm({
-      title: '是否删除所选用户?',
+      title: intl.formatMessage({ id: 'UserPage.removeTips', defaultMessage: '是否删除所选用户?' }),
       onOk: () =>
         removeUser(ids).then(() => {
-          message.success('删除成功!');
+          message.success(intl.formatMessage({ id: 'UserPage.removeOk', defaultMessage: '删除成功!' }));
           if (actionRef.current?.clearSelected) {
             actionRef.current?.clearSelected();
           }
@@ -56,16 +61,29 @@ function UserQuery({ currentUser }: { currentUser: SystemUser }) {
   function handleChangeStatus(record: SystemUser) {
     const nextStatus = record.status === '0' ? '1' : '0';
     Modal.confirm({
-      title: '警告',
+      title: intl.formatMessage({ id: 'common.warning', defaultMessage: '警告' }),
       content: (
         <p>
-          是否要将{record.userName}的状态改为
-          <span style={{ color: '#FF5722' }}>{nextStatus === '0' ? '正常' : '禁用'}</span>吗?
+          <RawIntlProvider value={intl}>
+            <FormattedMessage
+              id="UserPage.changeStatus"
+              defaultMessage="是否要将{name}的状态改为"
+              values={{ name: record.userName }}
+            />
+            <span style={{ color: '#FF5722' }}>
+              {nextStatus === '0' ? (
+                <FormattedMessage id="common.normal" defaultMessage="正常" />
+              ) : (
+                <FormattedMessage id="common.disabled" defaultMessage="禁用" />
+              )}
+            </span>
+            ?
+          </RawIntlProvider>
         </p>
       ),
       onOk: () =>
         changeStatus(record.userId, nextStatus).then(() => {
-          message.success('操作成功!');
+          message.success(intl.formatMessage({ id: 'common.operOk', defaultMessage: '操作成功' }));
           actionRef.current?.reload();
         }),
     });
@@ -79,49 +97,64 @@ function UserQuery({ currentUser }: { currentUser: SystemUser }) {
 
   const columns: ProColumns<SystemUser>[] = [
     {
-      title: '用户名',
+      title: intl.formatMessage({ id: 'User.loginName', defaultMessage: '用户名' }),
       dataIndex: 'loginName',
     },
     {
-      title: '昵称',
+      title: intl.formatMessage({ id: 'User.userName', defaultMessage: '昵称' }),
       dataIndex: 'userName',
       search: false,
     },
     {
-      title: '状态',
+      title: intl.formatMessage({ id: 'User.status', defaultMessage: '状态' }),
       dataIndex: 'status',
       valueEnum: {
-        '0': { text: '正常', status: 'Success' },
-        '1': { text: '禁用', status: 'Error' },
+        '0': { text: intl.formatMessage({ id: 'sys_oper_status.normal', defaultMessage: '正常' }), status: 'Success' },
+        '1': { text: intl.formatMessage({ id: 'sys_oper_status.disabled', defaultMessage: '禁用' }), status: 'Error' },
       },
       renderText: (_, record) => {
         return <Switch checked={record.status === '0'} onChange={() => handleChangeStatus(record)}></Switch>;
       },
     },
     {
-      title: '创建时间',
+      title: intl.formatMessage({ id: 'User.deptId', defaultMessage: '部门' }),
+      dataIndex: 'deptId',
+      hideInSearch: false,
+      renderText: (_, record) => {
+        const dept = deptsFlat.find(x => x.deptId === record.deptId);
+        return dept?.deptName || 'UnKnow';
+      },
+    },
+    {
+      title: intl.formatMessage({ id: 'User.createTime', defaultMessage: '创建时间' }),
       dataIndex: 'createTime',
       search: false,
     },
     {
-      title: '操作',
+      title: intl.formatMessage({ id: 'common.oper', defaultMessage: '操作' }),
       width: '180px',
       dataIndex: 'action',
       search: false,
       render: (_, record) => (
         <>
           <HasPermission authority="system:user:update">
-            <a onClick={() => handleUpdate(record)}>编辑</a>
+            <a onClick={() => handleUpdate(record)}>
+              <FormattedMessage id="common.edit" defaultMessage="编辑" />
+            </a>
             <Divider type="vertical" />
           </HasPermission>
 
           <HasPermission authority="system:user:resetPwd">
-            <a onClick={() => handleRestPwd(record)}>重置密码</a>
+            <a onClick={() => handleRestPwd(record)}>
+              <FormattedMessage id="UserPage.restPwd" defaultMessage="重置密码" />
+            </a>
             <Divider type="vertical" />
           </HasPermission>
 
           <HasPermission authority="system:user:remove">
-            <a onClick={() => handleRemove([record.userId])}>删除</a>
+            <a onClick={() => handleRemove([record.userId])}>
+              <FormattedMessage id="common.delete" defaultMessage="删除" />
+            </a>
           </HasPermission>
         </>
       ),
@@ -131,7 +164,7 @@ function UserQuery({ currentUser }: { currentUser: SystemUser }) {
   return (
     <PageContainer>
       <SuperTable<SystemUser>
-        headerTitle="用户管理"
+        headerTitle={<FormattedMessage id="UserPage.title" defaultMessage="用户管理" />}
         rowKey="userId"
         columns={columns}
         pagination={{ pageSize: 10 }}
@@ -175,7 +208,7 @@ function UserQuery({ currentUser }: { currentUser: SystemUser }) {
         toolBarRender={() => [
           <HasPermission key="add" authority="system:user:add">
             <Button type="primary" onClick={handleAdd}>
-              <PlusOutlined /> 新建
+              <PlusOutlined /> <FormattedMessage id="common.add" defaultMessage="新建" />
             </Button>
           </HasPermission>,
         ]}

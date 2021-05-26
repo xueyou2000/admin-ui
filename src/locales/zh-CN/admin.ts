@@ -1,0 +1,15 @@
+export default {
+  'menu.user.settings': '个人设置',
+  'menu.user.logout': '退出登录',
+  'common.add': '新建',
+  'common.edit': '编辑',
+  'common.delete': '删除',
+  'common.confirm': '确定',
+  'common.cancel': '取消',
+  'common.warning': '警告',
+  'common.operOk': '操作成功',
+  'common.normal': '正常',
+  'common.disabled': '禁用',
+  'common.oper': '操作',
+  'common.export': '导出',
+};

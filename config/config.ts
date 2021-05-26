@@ -2,33 +2,13 @@ import { defineConfig } from 'umi';
 import defaultSettings from './defaultSettings';
 import proxy from './proxy';
 const { REACT_APP_ENV, NODE_ENV } = process.env;
+const AntdDayjsWebpackPlugin = require('antd-dayjs-webpack-plugin');
 
 export default defineConfig({
   esbuild: {},
-  // chainWebpack: function(config, { webpack }) {
-  //   if (NODE_ENV === 'production') {
-  //     config.merge({
-  //       optimization: {
-  //         minimize: NODE_ENV === 'production',
-  //         splitChunks: {
-  //           chunks: 'all',
-  //           minSize: 30000,
-  //           minChunks: 3,
-  //           automaticNameDelimiter: '.',
-  //           cacheGroups: {
-  //             vendors: {
-  //               name: 'vendors',
-  //               test({ resource }: any) {
-  //                 return /[\\/]node_modules[\\/]/.test(resource);
-  //               },
-  //               priority: 10,
-  //             },
-  //           },
-  //         },
-  //       },
-  //     });
-  //   }
-  // },
+  chainWebpack: function(config, { webpack }) {
+    config.plugin('antdDayjsWebpackPlugin').use(new AntdDayjsWebpackPlugin());
+  },
   nodeModulesTransform: {
     type: 'none',
     exclude: [],

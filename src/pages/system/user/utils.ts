@@ -36,8 +36,11 @@ interface TreeData {
  */
 export function useDepts(currentUser?: SystemUser) {
   const [depts, setDepts] = useState<TreeData[]>([]);
+  const [deptsFlat, setDeptsFlat] = useState<Dept[]>([]);
+
   useEffect(() => {
     findEnableDepts().then(res => {
+      setDeptsFlat(res);
       // 过滤自己及以上部门，不能给上级部门创建用户
       const ancestors = (currentUser?.dept.ancestors || '').split(',');
       const treeData: TreeData[] = [];
@@ -46,5 +49,5 @@ export function useDepts(currentUser?: SystemUser) {
     });
   }, []);
 
-  return { depts };
+  return { depts, deptsFlat };
 }

@@ -6,7 +6,7 @@ import { toQueryBaseDto } from '@/utils/object-utils';
  */
 export function queryLoginLogByPage(data?: Partial<LoginInfo> & TableQueryParams) {
   const { pageSize, current } = data || {};
-  const queryData = toQueryBaseDto<LoginInfo, LoginInfoQuery>('loginInfo', data);
+  const queryData = toQueryBaseDto<LoginInfo, LoginInfoQuery>('loginInfo', data, ['loginTime']);
   if (queryData.queryBaseDto) {
     queryData.queryBaseDto.sortNames = ['login_time'];
   }

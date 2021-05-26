@@ -45,6 +45,10 @@ export default function DictDataModal({ dictType: dict }: { dictType: DictType }
       dataIndex: 'dictLabel',
     },
     {
+      title: '字典名称',
+      dataIndex: 'langLabel',
+    },
+    {
       title: '字典键值',
       dataIndex: 'dictValue',
     },

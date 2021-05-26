@@ -6,7 +6,7 @@ import { toQueryBaseDto } from '@/utils/object-utils';
  */
 export function queryOssByPage(data?: Partial<Oss> & TableQueryParams) {
   const { pageSize, current } = data || {};
-  const queryData = toQueryBaseDto<Oss, OssQuery>('oss', data);
+  const queryData = toQueryBaseDto<Oss, OssQuery>('oss', data, ['createTime']);
 
   return request
     .post<IResponse<IPage<Oss>>>(`/system/oss/findByPage/${pageSize}/${current}`, {

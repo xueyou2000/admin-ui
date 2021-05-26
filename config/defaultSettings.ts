@@ -17,11 +17,6 @@ const proSettings: Settings = {
   fixedHeader: false,
   /** 是否固定导航 */
   fixSiderbar: true,
-  /** 菜单配置 */
-  menu: {
-    /** 菜单是否国际化 */
-    locale: true,
-  },
   /** 左上角标题 */
   title: 'XueYou Admin',
   iconfontUrl: '',

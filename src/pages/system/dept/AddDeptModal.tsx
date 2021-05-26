@@ -3,16 +3,18 @@ import ModalFooter from '@/components/ModalPopup/ModalFooter';
 import { useSubmit } from '@/utils/page-utils';
 import { Button, Form, Input, InputNumber, message, Select, TreeSelect } from 'antd';
 import React from 'react';
+import { FormattedMessage, useIntl } from 'umi';
 import { addDept } from './service';
 import { useSystemDepts } from './utils';
 
 export default function AddDeptModal({ parentId = 0 }: { parentId?: number }) {
+  const intl = useIntl();
   const { loading, submitHandle } = useSubmit<Dept>(data =>
     addDept(data).then(() => {
-      message.success('新增部门成功');
+      message.success(intl.formatMessage({ id: 'DeptPage.addSuccess', defaultMessage: '新增部门成功' }));
     }),
   );
-  const { depts } = useSystemDepts();
+  const { depts } = useSystemDepts(intl.formatMessage({ id: 'DeptPage.empty', defaultMessage: '无' }));
 
   return (
     <Form<Dept>
@@ -22,40 +24,109 @@ export default function AddDeptModal({ parentId = 0 }: { parentId?: number }) {
       initialValues={{ parentId, orderNum: 1, status: '0' }}
     >
       <ModalContent>
-        <Form.Item name="parentId" label="上级部门" rules={[{ required: true, message: '请选择上级部门' }]}>
+        <Form.Item
+          name="parentId"
+          label={<FormattedMessage id="Dept.parentId" defaultMessage="上级部门" />}
+          rules={[
+            {
+              required: true,
+              message: intl.formatMessage({ id: 'Dept.parentId.required', defaultMessage: '请选择上级部门' }),
+            },
+          ]}
+        >
           <TreeSelect
             dropdownStyle={{ maxHeight: '400px', overflow: 'auto' }}
             treeData={depts}
-            placeholder="上级部门"
+            placeholder={intl.formatMessage({ id: 'Dept.parentId', defaultMessage: '上级部门' })}
             treeDefaultExpandAll
           />
         </Form.Item>
-        <Form.Item name="deptName" label="部门名称" rules={[{ required: true, message: '请输入部门名称' }]}>
-          <Input placeholder="请输入部门名称" />
+        <Form.Item
+          name="deptName"
+          label={<FormattedMessage id="Dept.deptName" defaultMessage="部门名称" />}
+          rules={[
+            {
+              required: true,
+              message: intl.formatMessage({ id: 'Dept.deptName.required', defaultMessage: '请输入部门名称' }),
+            },
+          ]}
+        >
+          <Input placeholder={intl.formatMessage({ id: 'Dept.deptName', defaultMessage: '部门名称' })} />
         </Form.Item>
-        <Form.Item name="orderNum" label="显示顺序" rules={[{ required: true, message: '请输入显示顺序' }]}>
-          <InputNumber placeholder="显示顺序" />
+        <Form.Item
+          name="orderNum"
+          label={<FormattedMessage id="Dept.orderNum" defaultMessage="显示顺序" />}
+          rules={[
+            {
+              required: true,
+              message: intl.formatMessage({ id: 'Dept.orderNum.required', defaultMessage: '请输入显示顺序' }),
+            },
+          ]}
+        >
+          <InputNumber placeholder={intl.formatMessage({ id: 'Dept.orderNum', defaultMessage: '显示顺序' })} />
         </Form.Item>
-        <Form.Item name="leader" label="负责人" rules={[{ required: true, message: '请输入负责人' }]}>
-          <Input placeholder="请输入负责人" />
+        <Form.Item
+          name="leader"
+          label={<FormattedMessage id="Dept.leader" defaultMessage="负责人" />}
+          rules={[
+            {
+              required: true,
+              message: intl.formatMessage({ id: 'Dept.leader.required', defaultMessage: '请输入负责人' }),
+            },
+          ]}
+        >
+          <Input placeholder={intl.formatMessage({ id: 'Dept.leader', defaultMessage: '负责人' })} />
         </Form.Item>
-        <Form.Item name="phone" label="联系电话" rules={[{ required: true, message: '请输入联系电话' }]}>
-          <Input placeholder="请输入联系电话" />
+        <Form.Item
+          name="phone"
+          label={<FormattedMessage id="Dept.phone" defaultMessage="联系电话" />}
+          rules={[
+            {
+              required: true,
+              message: intl.formatMessage({ id: 'Dept.phone.required', defaultMessage: '请输入联系电话' }),
+            },
+          ]}
+        >
+          <Input placeholder={intl.formatMessage({ id: 'Dept.phone', defaultMessage: '联系电话' })} />
         </Form.Item>
-        <Form.Item name="email" label="邮箱" rules={[{ required: true, message: '请输入邮箱' }]}>
-          <Input placeholder="请输入邮箱" />
+        <Form.Item
+          name="email"
+          label="邮箱"
+          rules={[
+            {
+              required: true,
+              message: intl.formatMessage({ id: 'Dept.email.required', defaultMessage: '请输入邮箱' }),
+            },
+          ]}
+        >
+          <Input placeholder={intl.formatMessage({ id: 'Dept.email', defaultMessage: '邮箱' })} />
         </Form.Item>
-        <Form.Item name="status" label="状态" rules={[{ required: true, message: '请选择状态' }]}>
+        <Form.Item
+          name="status"
+          label={<FormattedMessage id="Dept.status" defaultMessage="状态" />}
+          rules={[
+            {
+              required: true,
+              message: intl.formatMessage({ id: 'Dept.status.required', defaultMessage: '请选择状态' }),
+            },
+          ]}
+        >
           <Select>
-            <Select.Option value="0">正常</Select.Option>
-            <Select.Option value="1">停用</Select.Option>
+            <Select.Option value="0">
+              <FormattedMessage id="sys_oper_status.normal" defaultMessage="正常" />
+            </Select.Option>
+            <Select.Option value="1">
+              <FormattedMessage id="sys_oper_status.disabled" defaultMessage="禁用" />
+            </Select.Option>
           </Select>
         </Form.Item>
       </ModalContent>
       <ModalFooter>
-        <Button>取消</Button>
+        <Button>
+          <FormattedMessage id="common.cancel" defaultMessage="取消" />
+        </Button>
         <Button type="primary" loading={loading} htmlType="submit">
-          确定
+          <FormattedMessage id="common.confirm" defaultMessage="确定" />
         </Button>
       </ModalFooter>
     </Form>

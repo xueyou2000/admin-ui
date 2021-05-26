@@ -13,6 +13,7 @@ import MenuUpdateModal from './MenuUpdateModal';
 import { autoQuery } from '@/utils/page-utils';
 import { getMenuName } from './utils';
 import HasPermission from '@/components/Authorized/HasPermission';
+import { isEmpty } from 'lodash';
 
 function SystemMenuQuery() {
   const actionRef = useRef<ActionType>();
@@ -136,7 +137,11 @@ function SystemMenuQuery() {
         }}
         request={params =>
           querySystemMenuList({ ...params }).then(page => {
-            const data = treeData(page.records, 'menuId', 'parentId', 'children', 0);
+            // 带查询条件时，不进行树状排列，否则可能找不到父级，而不显示
+            let data: any = page.records;
+            if (isEmpty(params)) {
+              data = treeData(page.records, 'menuId', 'parentId', 'children', 0);
+            }
             records.current = data;
             return { success: true, data, total: page.total };
           })

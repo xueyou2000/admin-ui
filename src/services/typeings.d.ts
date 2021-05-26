@@ -72,9 +72,9 @@ interface DateRange {
   /** 列名称(字段名) */
   columnsField: string;
   /** 起始日期 */
-  startDate: string;
+  startDate: Date;
   /** 结束日期 */
-  endDate: string;
+  endDate: Date;
 }
 
 /** 数值范围查询 */

@@ -1,7 +1,7 @@
 import styles from './index.less';
 import { Avatar, Menu, Spin } from 'antd';
 import React from 'react';
-import { history, ConnectProps, connect, UserModelState } from 'umi';
+import { history, ConnectProps, connect, UserModelState, FormattedMessage } from 'umi';
 import { LogoutOutlined, SettingOutlined, UserOutlined } from '@ant-design/icons';
 import HeaderDropdown from '../HeaderDropdown';
 
@@ -36,14 +36,14 @@ function AvatarDropdown(props: AvatarDropdownProps) {
       {menu && (
         <Menu.Item key="settings">
           <SettingOutlined />
-          个人设置
+          <FormattedMessage id="menu.user.settings" defaultMessage="个人设置" />
         </Menu.Item>
       )}
       {menu && <Menu.Divider />}
 
       <Menu.Item key="logout">
         <LogoutOutlined />
-        退出登录
+        <FormattedMessage id="menu.user.logout" defaultMessage="退出登录" />
       </Menu.Item>
     </Menu>
   );

@@ -8,7 +8,7 @@ import { isBadResponse } from '@/utils/page-utils';
 import { CloudUploadOutlined } from '@ant-design/icons';
 import { PageContainer } from '@ant-design/pro-layout';
 import { ActionType, ProColumns } from '@ant-design/pro-table';
-import { Button, Divider, Image, message, Modal } from 'antd';
+import { Button, DatePicker, Divider, Form, Image, message, Modal } from 'antd';
 import { useEffect, useRef } from 'react';
 import { connect, UserModelState } from 'umi';
 import { Upload } from 'xy-upload';
@@ -83,6 +83,18 @@ function OssQuery({ currentUser }: { currentUser: SystemUser }) {
         '3': '腾讯云',
       },
       editable: false,
+    },
+    {
+      title: '创建时间',
+      dataIndex: ['dateRanges', 'createTime'],
+      hideInTable: true,
+      renderFormItem: item => {
+        return (
+          <Form.Item name={item.dataIndex} label="">
+            <DatePicker.RangePicker />
+          </Form.Item>
+        );
+      },
     },
     {
       title: '创建时间',

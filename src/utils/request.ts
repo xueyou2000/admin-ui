@@ -51,9 +51,16 @@ function errorHandler(error: ResponseError<IResponse>) {
             }),
             onOk: () => {
               stopAuthprityError = false;
-              history.replace(`/user/login?status=authorized_timeout&redirect=${history.location.pathname}`, {
-                username: authority.username,
-              });
+              const pathname = history.location.pathname;
+
+              history.replace(
+                `/user/login?status=authorized_timeout${
+                  pathname.indexOf('/user/login') === -1 ? `&redirect=${pathname}` : ''
+                }`,
+                {
+                  username: authority.username,
+                },
+              );
               return Promise.resolve();
             },
           });
@@ -101,11 +108,12 @@ const request = extend({
  * 请求附加授权token拦截器, 设置baseurl
  */
 request.interceptors.request.use((url, options) => {
-  const finallyUrl = HTTP_BASE_URL ? `${HTTP_BASE_URL.replace(/\/$/, '')}/${url.replace(/^\//, '')}` : url;
+  let finallyUrl = HTTP_BASE_URL ? `${HTTP_BASE_URL.replace(/\/$/, '')}/${url.replace(/^\//, '')}` : url;
   const authority = getAuthority();
   if (authority) {
     options.headers = Object.assign({}, options.headers, { token: authority.token });
   }
+  finallyUrl += `${finallyUrl.indexOf('?') === -1 ? '?' : '&'}lang=${getLocale()}`;
   return {
     url: options.directlyUrl ? url : finallyUrl,
     options,

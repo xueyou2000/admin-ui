@@ -6,7 +6,7 @@ import { toQueryBaseDto } from '@/utils/object-utils';
  */
 export function queryOperLogByPage(data?: Partial<OperLog> & TableQueryParams) {
   const { pageSize, current } = data || {};
-  const queryData = toQueryBaseDto<OperLog, OperLogQuery>('operLog', data);
+  const queryData = toQueryBaseDto<OperLog, OperLogQuery>('operLog', data, ['operTime']);
   if (queryData.queryBaseDto) {
     queryData.queryBaseDto.sortNames = ['oper_time'];
   }

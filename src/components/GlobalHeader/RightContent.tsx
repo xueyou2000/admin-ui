@@ -43,7 +43,7 @@ function GlobalHeaderRight(props: GlobalHeaderRightProps) {
           <QuestionCircleOutlined />
         </a>
       </Tooltip>
-      <NoticeIconView />
+      {/* <NoticeIconView /> */}
       <AvatarDropdown menu={true} />
       {REACT_APP_ENV && (
         <span>

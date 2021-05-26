@@ -7,7 +7,7 @@ import request from '@/utils/request';
  * @param menu 查询条件
  */
 export function querySystemMenuList(data?: Partial<SystemMenu> & TableQueryParams) {
-  const queryData = toQueryBaseDto<SystemMenu, SystemMenuQuery>('menu', data);
+  const queryData = toQueryBaseDto<SystemMenu, SystemMenuQuery>('menu', data, ['createTime']);
   if (queryData.queryBaseDto) {
     queryData.queryBaseDto.direction = 'ASC';
     queryData.queryBaseDto.sortNames = ['order_num'];
